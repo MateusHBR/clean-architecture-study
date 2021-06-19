@@ -5,14 +5,16 @@ import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class HttpAdapter {
+import 'package:course_clean_arch/data/http/http.dart';
+
+class HttpAdapter implements HttpClient {
   final Client client;
 
   HttpAdapter({
     required this.client,
   });
 
-  Future<void> request({
+  Future<Map> request({
     required String url,
     required String method,
     Map? body,
@@ -24,11 +26,13 @@ class HttpAdapter {
 
     final jsonBody = body != null ? jsonEncode(body) : null;
 
-    await client.post(
+    final response = await client.post(
       Uri.parse(url),
       headers: headers,
       body: jsonBody,
     );
+
+    return response.body.isEmpty ? {} : jsonDecode(response.body);
   }
 }
 
@@ -60,7 +64,7 @@ void main() {
           body: any(named: 'body'),
         ),
       ).thenAnswer(
-        (_) async => Response('mock-response', 200),
+        (_) async => Response('{"any_key":"any_value"}', 200),
       );
 
       await sut.request(
@@ -87,7 +91,7 @@ void main() {
           headers: any(named: 'headers'),
         ),
       ).thenAnswer(
-        (_) async => Response('mock-response', 200),
+        (_) async => Response('{"any_key":"any_value"}', 200),
       );
 
       await sut.request(
@@ -101,6 +105,42 @@ void main() {
           headers: any(named: 'headers'),
         ),
       ).called(1);
+    });
+
+    test('should return data if post returns 200', () async {
+      when(
+        () => client.post(
+          Uri.parse(url),
+          headers: any(named: 'headers'),
+        ),
+      ).thenAnswer(
+        (_) async => Response('{"any_key":"any_value"}', 200),
+      );
+
+      final response = await sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(response, {'any_key': 'any_value'});
+    });
+
+    test('should empty map if post returns 200 with no data', () async {
+      when(
+        () => client.post(
+          Uri.parse(url),
+          headers: any(named: 'headers'),
+        ),
+      ).thenAnswer(
+        (_) async => Response('', 200),
+      );
+
+      final response = await sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(response, {});
     });
   });
 }
