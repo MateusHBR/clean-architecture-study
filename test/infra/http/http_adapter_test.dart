@@ -3,6 +3,8 @@ import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+import 'package:course_clean_arch/data/http/http.dart';
+
 import 'package:course_clean_arch/infra/http/http.dart';
 
 class ClientSpy extends Mock implements Client {}
@@ -120,6 +122,29 @@ void main() {
       );
 
       expect(response, {});
+    });
+
+    test('should return BarRequestError if post returns 400 with data',
+        () async {
+      mockResponse(statusCode: 400, body: '');
+
+      final future = sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(future, throwsA(HttpError.badRequest));
+    });
+
+    test('should return BarRequestError if post returns 400', () async {
+      mockResponse(statusCode: 400);
+
+      final future = sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(future, throwsA(HttpError.badRequest));
     });
   });
 }
