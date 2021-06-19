@@ -38,6 +38,8 @@ class HttpAdapter implements HttpClient {
 
 class ClientSpy extends Mock implements Client {}
 
+typedef PostExpectationResponse = When<Future<Response>>;
+
 void main() {
   late ClientSpy client;
   late String url;
@@ -56,17 +58,28 @@ void main() {
     sut = HttpAdapter(client: client);
   });
   group('post', () {
-    test('should call post with correct values', () async {
-      when(
-        () => client.post(
-          Uri.parse(url),
-          headers: headers,
-          body: any(named: 'body'),
-        ),
-      ).thenAnswer(
-        (_) async => Response('{"any_key":"any_value"}', 200),
-      );
+    PostExpectationResponse mockRequest() => when(
+          () => client.post(
+            Uri.parse(url),
+            headers: headers,
+            body: any(named: 'body'),
+          ),
+        );
 
+    void mockResponse({
+      required int statusCode,
+      String body = '{"any_key":"any_value"}',
+    }) {
+      mockRequest().thenAnswer(
+        (_) async => Response(body, statusCode),
+      );
+    }
+
+    setUp(() {
+      mockResponse(statusCode: 200);
+    });
+
+    test('should call post with correct values', () async {
       await sut.request(
         url: url,
         method: 'post',
@@ -85,15 +98,6 @@ void main() {
     });
 
     test('should call post without body', () async {
-      when(
-        () => client.post(
-          Uri.parse(url),
-          headers: any(named: 'headers'),
-        ),
-      ).thenAnswer(
-        (_) async => Response('{"any_key":"any_value"}', 200),
-      );
-
       await sut.request(
         url: url,
         method: 'post',
@@ -108,15 +112,6 @@ void main() {
     });
 
     test('should return data if post returns 200', () async {
-      when(
-        () => client.post(
-          Uri.parse(url),
-          headers: any(named: 'headers'),
-        ),
-      ).thenAnswer(
-        (_) async => Response('{"any_key":"any_value"}', 200),
-      );
-
       final response = await sut.request(
         url: url,
         method: 'post',
@@ -126,14 +121,7 @@ void main() {
     });
 
     test('should empty map if post returns 200 with no data', () async {
-      when(
-        () => client.post(
-          Uri.parse(url),
-          headers: any(named: 'headers'),
-        ),
-      ).thenAnswer(
-        (_) async => Response('', 200),
-      );
+      mockResponse(statusCode: 200, body: '');
 
       final response = await sut.request(
         url: url,
