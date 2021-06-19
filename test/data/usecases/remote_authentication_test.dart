@@ -2,10 +2,11 @@ import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:faker/faker.dart';
 
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:course_clean_arch/domain/usecases/usecases.dart';
 
-import 'package:course_clean_arch/data/usecases/usecases.dart';
 import 'package:course_clean_arch/data/http/http.dart';
+import 'package:course_clean_arch/data/usecases/usecases.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
@@ -22,7 +23,8 @@ void main() {
       httpClient: httpClient,
       url: url,
     );
-
+  });
+  test('should call httpClient with correct values', () async {
     when(
       () => httpClient.request(
         url: url,
@@ -32,8 +34,7 @@ void main() {
     ).thenAnswer(
       (_) async => {},
     );
-  });
-  test('should call httpClient with correct values', () async {
+
     final params = AuthenticationParams(
       email: faker.internet.email(),
       password: faker.internet.password(),
@@ -51,5 +52,24 @@ void main() {
         },
       ),
     ).called(1);
+  });
+
+  test('should throw unexpectedError if HttpClient returns 400', () async {
+    when(
+      () => httpClient.request(
+        url: any(named: 'url'),
+        method: any(named: 'method'),
+        body: any(named: 'body'),
+      ),
+    ).thenThrow(HttpError.badRequest);
+
+    final params = AuthenticationParams(
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    );
+
+    final future = sut.auth(params);
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
