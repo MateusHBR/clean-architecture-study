@@ -4,39 +4,8 @@ import 'package:faker/faker.dart';
 
 import 'package:course_clean_arch/domain/usecases/usecases.dart';
 
-class RemoteAuthentication {
-  final HttpClient httpClient;
-  final String url;
-
-  RemoteAuthentication({
-    required this.httpClient,
-    required this.url,
-  });
-
-  Future<void> auth(AuthenticationParams params) async {
-    final body = {
-      'email': params.email,
-      'password': params.password,
-    };
-
-    print(params.email);
-    print(params.password);
-
-    await httpClient.request(
-      url: url,
-      method: 'post',
-      body: body,
-    );
-  }
-}
-
-abstract class HttpClient {
-  Future<void> request({
-    required String url,
-    required String method,
-    Map body,
-  });
-}
+import 'package:course_clean_arch/data/usecases/usecases.dart';
+import 'package:course_clean_arch/data/http/http.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
@@ -76,10 +45,7 @@ void main() {
       () => httpClient.request(
         url: url,
         method: 'post',
-        body: {
-          'email': params.email,
-          'password': params.password,
-        },
+        body: params.toJson(),
       ),
     ).called(1);
   });
