@@ -127,7 +127,7 @@ class LoginPage extends StatelessWidget {
               final isEnabled = snapshot.data ?? false;
 
               return ElevatedButton(
-                onPressed: isEnabled ? () {} : null,
+                onPressed: isEnabled ? presenter!.authenticate : null,
                 child: Text(
                   'Entrar'.toUpperCase(),
                 ),
