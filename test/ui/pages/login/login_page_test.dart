@@ -17,14 +17,15 @@ void main() {
   late StreamController<bool> isLoadingController;
   late StreamController<String> mainErrorController;
 
-  Future<void> loadPage(WidgetTester tester) async {
-    presenter = LoginPresenterSpy();
+  void initializeStreams() {
     emailErrorController = StreamController<String?>();
     passwordErrorController = StreamController<String?>();
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
     mainErrorController = StreamController<String>();
+  }
 
+  void mockStreams() {
     when(
       () => presenter.emailErrorStream,
     ).thenAnswer(
@@ -54,6 +55,21 @@ void main() {
     ).thenAnswer(
       (invocation) => mainErrorController.stream,
     );
+  }
+
+  void closeStreams() {
+    emailErrorController.close();
+    passwordErrorController.close();
+    isFormValidController.close();
+    isLoadingController.close();
+    mainErrorController.close();
+  }
+
+  Future<void> loadPage(WidgetTester tester) async {
+    presenter = LoginPresenterSpy();
+
+    initializeStreams();
+    mockStreams();
 
     final loginPage = MaterialApp(
       home: LoginPage(
@@ -64,11 +80,8 @@ void main() {
   }
 
   tearDown(() {
-    emailErrorController.close();
-    passwordErrorController.close();
-    isFormValidController.close();
-    isLoadingController.close();
-    mainErrorController.close();
+    // this method is called before delete the page from the tree
+    closeStreams();
   });
 
   testWidgets(
