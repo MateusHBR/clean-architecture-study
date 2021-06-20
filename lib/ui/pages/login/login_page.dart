@@ -12,17 +12,55 @@ class LoginPage extends StatelessWidget {
     required this.presenter,
   }) : super(key: key);
 
+  Widget _loadingDialog() {
+    return SimpleDialog(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            const SizedBox(height: 10),
+            Text(
+              'Aguarde...',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _header(context),
-            _body(context),
-          ],
-        ),
+      body: Builder(
+        builder: (context) {
+          presenter!.isLoadingStream.listen((isLoading) {
+            if (isLoading) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) {
+                  return _loadingDialog();
+                },
+              );
+            } else {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            }
+          });
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _header(context),
+                _body(context),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -14,12 +14,15 @@ void main() {
   late StreamController<String?> emailErrorController;
   late StreamController<String?> passwordErrorController;
   late StreamController<bool> isFormValidController;
+  late StreamController<bool> isLoadingController;
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = LoginPresenterSpy();
     emailErrorController = StreamController<String?>();
     passwordErrorController = StreamController<String?>();
     isFormValidController = StreamController<bool>();
+    isLoadingController = StreamController<bool>();
+
     when(
       () => presenter.emailErrorStream,
     ).thenAnswer(
@@ -38,6 +41,12 @@ void main() {
       (_) => isFormValidController.stream,
     );
 
+    when(
+      () => presenter.isLoadingStream,
+    ).thenAnswer(
+      (invocation) => isLoadingController.stream,
+    );
+
     final loginPage = MaterialApp(
       home: LoginPage(
         presenter: presenter,
@@ -50,6 +59,7 @@ void main() {
     emailErrorController.close();
     passwordErrorController.close();
     isFormValidController.close();
+    isLoadingController.close();
   });
 
   testWidgets(
@@ -83,6 +93,7 @@ void main() {
         find.byType(ElevatedButton),
       );
       expect(button.onPressed, null);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
     },
   );
 
@@ -323,6 +334,33 @@ void main() {
       await tester.pump();
 
       verify(() => presenter.authenticate()).called(1);
+    },
+  );
+
+  testWidgets(
+    'should present loading',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      isLoadingController.add(true);
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'should not presents loading',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      isLoadingController.add(true);
+      await tester.pump();
+
+      isLoadingController.add(false);
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsNothing);
     },
   );
 }
