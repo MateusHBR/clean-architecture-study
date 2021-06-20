@@ -81,7 +81,8 @@ class LoginPage extends StatelessWidget {
           StreamBuilder<String?>(
             stream: presenter!.emailErrorStream,
             builder: (context, snapshot) {
-              final errorMessage = snapshot.data;
+              final errorMessage =
+                  snapshot.data?.isEmpty == true ? null : snapshot.data;
 
               return TextFormField(
                 decoration: InputDecoration(
