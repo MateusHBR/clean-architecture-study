@@ -4,13 +4,24 @@ import '../../assets/assets.dart';
 
 import './login_presenter.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   final LoginPresenter? presenter;
 
   const LoginPage({
     Key? key,
     required this.presenter,
   }) : super(key: key);
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  @override
+  void dispose() {
+    widget.presenter!.dispose();
+    super.dispose();
+  }
 
   Widget _loadingDialog() {
     return SimpleDialog(
@@ -35,7 +46,7 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          presenter!.isLoadingStream.listen((isLoading) {
+          widget.presenter!.isLoadingStream.listen((isLoading) {
             if (isLoading) {
               showDialog(
                 context: context,
@@ -51,7 +62,7 @@ class LoginPage extends StatelessWidget {
             }
           });
 
-          presenter!.isErrorStream.listen((error) {
+          widget.presenter!.isErrorStream.listen((error) {
             if (error != null) {
               Scaffold.of(context).showSnackBar(
                 SnackBar(
@@ -128,7 +139,7 @@ class LoginPage extends StatelessWidget {
       child: Column(
         children: [
           StreamBuilder<String?>(
-            stream: presenter!.emailErrorStream,
+            stream: widget.presenter!.emailErrorStream,
             builder: (context, snapshot) {
               final errorMessage =
                   snapshot.data?.isEmpty == true ? null : snapshot.data;
@@ -142,14 +153,14 @@ class LoginPage extends StatelessWidget {
                   ),
                   errorText: errorMessage,
                 ),
-                onChanged: presenter!.validateEmail,
+                onChanged: widget.presenter!.validateEmail,
                 keyboardType: TextInputType.emailAddress,
               );
             },
           ),
           const SizedBox(height: 8),
           StreamBuilder<String?>(
-            stream: presenter!.passwordErrorStream,
+            stream: widget.presenter!.passwordErrorStream,
             builder: (context, snapshot) {
               final errorMessage =
                   snapshot.data?.isEmpty == true ? null : snapshot.data;
@@ -163,20 +174,20 @@ class LoginPage extends StatelessWidget {
                   ),
                   errorText: errorMessage,
                 ),
-                onChanged: presenter!.validatePassword,
+                onChanged: widget.presenter!.validatePassword,
                 obscureText: true,
               );
             },
           ),
           const SizedBox(height: 32),
           StreamBuilder<bool>(
-            stream: presenter!.isFormValidStream,
+            stream: widget.presenter!.isFormValidStream,
             initialData: false,
             builder: (context, snapshot) {
               final isEnabled = snapshot.data ?? false;
 
               return ElevatedButton(
-                onPressed: isEnabled ? presenter!.authenticate : null,
+                onPressed: isEnabled ? widget.presenter!.authenticate : null,
                 child: Text(
                   'Entrar'.toUpperCase(),
                 ),
