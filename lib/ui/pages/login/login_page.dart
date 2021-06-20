@@ -120,11 +120,19 @@ class LoginPage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: null,
-            child: Text(
-              'Entrar'.toUpperCase(),
-            ),
+          StreamBuilder<bool>(
+            stream: presenter!.isFormValidStream,
+            initialData: false,
+            builder: (context, snapshot) {
+              final isEnabled = snapshot.data ?? false;
+
+              return ElevatedButton(
+                onPressed: isEnabled ? () {} : null,
+                child: Text(
+                  'Entrar'.toUpperCase(),
+                ),
+              );
+            },
           ),
           TextButton.icon(
             onPressed: () {},
