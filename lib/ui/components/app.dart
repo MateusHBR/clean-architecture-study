@@ -13,7 +13,9 @@ class App extends StatelessWidget {
       title: 'Couse Clean Architecture',
       debugShowCheckedModeBanner: false,
       theme: _appTheme,
-      home: LoginPage(),
+      home: LoginPage(
+        presenter: null,
+      ),
     );
   }
 
