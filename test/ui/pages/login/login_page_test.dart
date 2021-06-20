@@ -333,7 +333,7 @@ void main() {
       when(
         () => presenter.authenticate(),
       ).thenAnswer(
-        (_) {},
+        (_) async {},
       );
 
       isFormValidController.add(true);
