@@ -92,7 +92,7 @@ class LoginPage extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: null,
             child: Text(
               'Entrar'.toUpperCase(),
             ),
