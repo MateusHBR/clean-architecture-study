@@ -109,62 +109,11 @@ class _LoginPageState extends State<LoginPage> {
     return Form(
       child: Column(
         children: [
-          StreamBuilder<String?>(
-            stream: widget.presenter!.emailErrorStream,
-            builder: (context, snapshot) {
-              final errorMessage =
-                  snapshot.data?.isEmpty == true ? null : snapshot.data;
-
-              return TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  icon: Icon(
-                    Icons.email,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  errorText: errorMessage,
-                ),
-                onChanged: widget.presenter!.validateEmail,
-                keyboardType: TextInputType.emailAddress,
-              );
-            },
-          ),
+          _emailInputField(),
           const SizedBox(height: 8),
-          StreamBuilder<String?>(
-            stream: widget.presenter!.passwordErrorStream,
-            builder: (context, snapshot) {
-              final errorMessage =
-                  snapshot.data?.isEmpty == true ? null : snapshot.data;
-
-              return TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                  icon: Icon(
-                    Icons.lock,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  errorText: errorMessage,
-                ),
-                onChanged: widget.presenter!.validatePassword,
-                obscureText: true,
-              );
-            },
-          ),
+          _passwordInputField(),
           const SizedBox(height: 32),
-          StreamBuilder<bool>(
-            stream: widget.presenter!.isFormValidStream,
-            initialData: false,
-            builder: (context, snapshot) {
-              final isEnabled = snapshot.data ?? false;
-
-              return ElevatedButton(
-                onPressed: isEnabled ? widget.presenter!.authenticate : null,
-                child: Text(
-                  'Entrar'.toUpperCase(),
-                ),
-              );
-            },
-          ),
+          _loginButton(),
           TextButton.icon(
             onPressed: () {},
             icon: Icon(Icons.person),
@@ -172,6 +121,69 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _emailInputField() {
+    return StreamBuilder<String?>(
+      stream: widget.presenter!.emailErrorStream,
+      builder: (context, snapshot) {
+        final errorMessage =
+            snapshot.data?.isEmpty == true ? null : snapshot.data;
+
+        return TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Email',
+            icon: Icon(
+              Icons.email,
+              color: Theme.of(context).primaryColorLight,
+            ),
+            errorText: errorMessage,
+          ),
+          onChanged: widget.presenter!.validateEmail,
+          keyboardType: TextInputType.emailAddress,
+        );
+      },
+    );
+  }
+
+  Widget _passwordInputField() {
+    return StreamBuilder<String?>(
+      stream: widget.presenter!.passwordErrorStream,
+      builder: (context, snapshot) {
+        final errorMessage =
+            snapshot.data?.isEmpty == true ? null : snapshot.data;
+
+        return TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Senha',
+            icon: Icon(
+              Icons.lock,
+              color: Theme.of(context).primaryColorLight,
+            ),
+            errorText: errorMessage,
+          ),
+          onChanged: widget.presenter!.validatePassword,
+          obscureText: true,
+        );
+      },
+    );
+  }
+
+  Widget _loginButton() {
+    return StreamBuilder<bool>(
+      stream: widget.presenter!.isFormValidStream,
+      initialData: false,
+      builder: (context, snapshot) {
+        final isEnabled = snapshot.data ?? false;
+
+        return ElevatedButton(
+          onPressed: isEnabled ? widget.presenter!.authenticate : null,
+          child: Text(
+            'Entrar'.toUpperCase(),
+          ),
+        );
+      },
     );
   }
 }
