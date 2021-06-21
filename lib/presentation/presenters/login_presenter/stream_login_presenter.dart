@@ -35,4 +35,11 @@ class StreamLoginPresenter {
 
     _controller.add(_state);
   }
+
+  void validatePassword(String password) {
+    _state.passwordError = validation.validate(
+      field: 'password',
+      value: password,
+    );
+  }
 }
