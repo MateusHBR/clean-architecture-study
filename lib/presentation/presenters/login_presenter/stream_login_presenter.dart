@@ -21,11 +21,19 @@ class StreamLoginPresenter {
       )
       .distinct();
 
+  Stream<String?> get passwordErrorStream => _controller.stream
+      .map(
+        (state) => state.passwordError,
+      )
+      .distinct();
+
   Stream<bool> get isFormValidStream => _controller.stream
       .map(
         (state) => state.isFormValid,
       )
       .distinct();
+
+  void _notifyListeners() => _controller.add(_state);
 
   void validateEmail(String email) {
     _state.emailError = validation.validate(
@@ -33,7 +41,7 @@ class StreamLoginPresenter {
       value: email,
     );
 
-    _controller.add(_state);
+    _notifyListeners();
   }
 
   void validatePassword(String password) {
@@ -41,5 +49,7 @@ class StreamLoginPresenter {
       field: 'password',
       value: password,
     );
+
+    _notifyListeners();
   }
 }
