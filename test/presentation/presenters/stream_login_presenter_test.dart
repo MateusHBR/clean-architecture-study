@@ -6,10 +6,23 @@ import 'package:test/test.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
+typedef ValidationExpectation = When<String?>;
+
 void main() {
   late StreamLoginPresenter sut;
   late ValidationSpy validation;
   late String email;
+
+  ValidationExpectation mockValidationCall({String? field}) => when(
+        () => validation.validate(
+          field: field == null ? any(named: 'field') : field,
+          value: any(named: 'value'),
+        ),
+      );
+
+  void mockValidation({String? field, String? value}) {
+    mockValidationCall(field: field).thenReturn(value);
+  }
 
   setUp(() {
     validation = ValidationSpy();
@@ -17,6 +30,7 @@ void main() {
       validation: validation,
     );
     email = faker.internet.email();
+    mockValidation();
   });
 
   test('should call validation with correct email', () {
@@ -31,12 +45,7 @@ void main() {
   });
 
   test('should emit email error if validation fails', () {
-    when(
-      () => validation.validate(
-        field: any(named: 'field'),
-        value: any(named: 'value'),
-      ),
-    ).thenReturn('error');
+    mockValidation(value: 'error');
 
     expectLater(sut.emailErrorStream, emits('error'));
 
