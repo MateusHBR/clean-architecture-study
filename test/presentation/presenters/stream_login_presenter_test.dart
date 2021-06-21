@@ -5,14 +5,18 @@ import 'package:test/test.dart';
 class ValidationSpy extends Mock implements Validation {}
 
 void main() {
-  test('should call validation with correct email', () {
-    final validation = ValidationSpy();
-    final sut = StreamLoginPresenter(
+  late StreamLoginPresenter sut;
+  late ValidationSpy validation;
+  late String email;
+
+  setUp(() {
+    validation = ValidationSpy();
+    sut = StreamLoginPresenter(
       validation: validation,
     );
-
-    final email = faker.internet.email();
-
+    email = faker.internet.email();
+  });
+  test('should call validation with correct email', () {
     sut.validateEmail(email);
 
     verify(
