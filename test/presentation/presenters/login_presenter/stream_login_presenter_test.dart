@@ -120,4 +120,25 @@ void main() {
     sut.validatePassword(password);
     sut.validatePassword(password);
   });
+
+  test(
+      'email should emit error and password dont, but form should not be valid',
+      () {
+    mockValidation(field: 'email', value: 'error');
+
+    sut.passwordErrorStream.listen(
+      expectAsync1((error) => null),
+    );
+
+    sut.emailErrorStream.listen(
+      expectAsync1((error) => 'error'),
+    );
+
+    sut.isFormValidStream.listen(
+      expectAsync1((isValid) => expect(isValid, false)),
+    );
+
+    sut.validatePassword(password);
+    sut.validatePassword(password);
+  });
 }
