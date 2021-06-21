@@ -36,6 +36,7 @@ class StreamLoginPresenter {
   void _notifyListeners() => _controller.add(_state);
 
   void validateEmail(String email) {
+    _state.email = email;
     _state.emailError = validation.validate(
       field: 'email',
       value: email,
@@ -45,6 +46,7 @@ class StreamLoginPresenter {
   }
 
   void validatePassword(String password) {
+    _state.password = password;
     _state.passwordError = validation.validate(
       field: 'password',
       value: password,

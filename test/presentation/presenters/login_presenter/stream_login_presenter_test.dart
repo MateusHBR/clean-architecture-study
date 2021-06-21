@@ -139,6 +139,23 @@ void main() {
     );
 
     sut.validatePassword(password);
+    sut.validateEmail(password);
+  });
+  test(
+      'email should emit error and password dont, but form should not be valid',
+      () async {
+    sut.passwordErrorStream.listen(
+      expectAsync1((error) => null),
+    );
+
+    sut.emailErrorStream.listen(
+      expectAsync1((error) => null),
+    );
+
+    expectLater(sut.isFormValidStream, emitsInOrder([false, true]));
+
     sut.validatePassword(password);
+    await Future.delayed(Duration.zero);
+    sut.validateEmail(password);
   });
 }
