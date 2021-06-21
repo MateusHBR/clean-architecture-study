@@ -15,9 +15,11 @@ class StreamLoginPresenter {
 
   var _state = LoginState();
 
-  Stream<String?> get emailErrorStream => _controller.stream.map(
+  Stream<String?> get emailErrorStream => _controller.stream
+      .map(
         (state) => state.emailError,
-      );
+      )
+      .distinct();
 
   void validateEmail(String email) {
     _state.emailError = validation.validate(
