@@ -1,17 +1,23 @@
+import 'package:course_clean_arch/domain/entities/entities.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+
+import 'package:course_clean_arch/domain/usecases/usecases.dart';
 
 import 'package:course_clean_arch/presentation/presenters/presenters.dart';
 import 'package:course_clean_arch/presentation/protocols/protocols.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
+class AuthenticationSpy extends Mock implements Authentication {}
+
 typedef ValidationExpectation = When<String?>;
 
 void main() {
   late StreamLoginPresenter sut;
   late ValidationSpy validation;
+  late AuthenticationSpy authenticationUseCase;
   late String email;
   late String password;
 
@@ -28,8 +34,10 @@ void main() {
 
   setUp(() {
     validation = ValidationSpy();
+    authenticationUseCase = AuthenticationSpy();
     sut = StreamLoginPresenter(
       validation: validation,
+      authenticationUseCase: authenticationUseCase,
     );
     email = faker.internet.email();
     password = faker.internet.password();
@@ -157,5 +165,26 @@ void main() {
     sut.validatePassword(password);
     await Future.delayed(Duration.zero);
     sut.validateEmail(password);
+  });
+
+  test('should call authentication with correct values', () async {
+    when(
+      () => authenticationUseCase(
+        AuthenticationParams(email: email, password: password),
+      ),
+    ).thenAnswer(
+      (_) async => AccountEntity(token: ''),
+    );
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    await sut.authenticate();
+
+    verify(
+      () => authenticationUseCase(
+        AuthenticationParams(email: email, password: password),
+      ),
+    ).called(1);
   });
 }

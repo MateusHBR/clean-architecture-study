@@ -14,7 +14,7 @@ class RemoteAuthentication implements Authentication {
     required this.url,
   });
 
-  Future<AccountEntity> auth(AuthenticationParams params) async {
+  Future<AccountEntity> call(AuthenticationParams params) async {
     final body = RemoteAuthenticationParams.fromDomain(params).toJson();
 
     try {

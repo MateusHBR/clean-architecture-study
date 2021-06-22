@@ -1,14 +1,20 @@
 import 'dart:async';
 
+import '../../../domain/usecases/usecases.dart';
+
+import '../../../ui/pages/pages.dart';
+
 import '../../protocols/protocols.dart';
 
 import 'login_state.dart';
 
-class StreamLoginPresenter {
+class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
+  final Authentication authenticationUseCase;
 
   StreamLoginPresenter({
     required this.validation,
+    required this.authenticationUseCase,
   });
 
   final _controller = StreamController<LoginState>.broadcast();
@@ -54,4 +60,24 @@ class StreamLoginPresenter {
 
     _notifyListeners();
   }
+
+  @override
+  Future<void> authenticate() async {
+    await authenticationUseCase(
+      AuthenticationParams(email: _state.email!, password: _state.password!),
+    );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+  }
+
+  @override
+  // TODO: implement isErrorStream
+  Stream<String?> get isErrorStream => throw UnimplementedError();
+
+  @override
+  // TODO: implement isLoadingStream
+  Stream<bool> get isLoadingStream => throw UnimplementedError();
 }

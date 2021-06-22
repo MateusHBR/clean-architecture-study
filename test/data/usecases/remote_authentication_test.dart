@@ -62,7 +62,7 @@ void main() {
       password: faker.internet.password(),
     );
 
-    await sut.auth(params);
+    await sut.call(params);
 
     verify(
       () => httpClient.request(
@@ -79,7 +79,7 @@ void main() {
   test('should throw unexpectedError if HttpClient returns 400', () async {
     mockHttpError(HttpError.badRequest);
 
-    final future = sut.auth(params);
+    final future = sut.call(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -87,7 +87,7 @@ void main() {
   test('should throw unexpectedError if HttpClient returns 404', () async {
     mockHttpError(HttpError.notFound);
 
-    final future = sut.auth(params);
+    final future = sut.call(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -95,7 +95,7 @@ void main() {
   test('should throw unexpectedError if HttpClient returns 500', () async {
     mockHttpError(HttpError.serverError);
 
-    final future = sut.auth(params);
+    final future = sut.call(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -104,7 +104,7 @@ void main() {
       () async {
     mockHttpError(HttpError.unauthorized);
 
-    final future = sut.auth(params);
+    final future = sut.call(params);
 
     expect(future, throwsA(DomainError.invalidCredentials));
   });
@@ -114,7 +114,7 @@ void main() {
 
     mockHttpData(validData);
 
-    final account = await sut.auth(params);
+    final account = await sut.call(params);
 
     expect(account.token, validData['accessToken']);
   });
@@ -124,7 +124,7 @@ void main() {
       () async {
     mockHttpData({'invalid_key': 'invalidValue'});
 
-    final future = sut.auth(params);
+    final future = sut.call(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
