@@ -15,6 +15,10 @@ void main() {
   StringOrNullExpectation mockFieldCall(FieldValidationSpty validationSpy) =>
       when(() => validationSpy.field);
 
+  StringOrNullExpectation mockValidationCall(
+          FieldValidationSpty validationSpy) =>
+      when(() => validationSpy.validate(any()));
+
   void mockField({
     required FieldValidationSpty validationSpy,
     required String? returnValue,
@@ -22,15 +26,18 @@ void main() {
     mockFieldCall(validationSpy).thenReturn(returnValue);
   }
 
-  StringOrNullExpectation mockValidationCall(
-          FieldValidationSpty validationSpy) =>
-      when(() => validationSpy.validate(any()));
-
   void mockValidation({
     required FieldValidationSpty validationSpy,
     required String? returnValue,
   }) {
     mockValidationCall(validationSpy).thenReturn(returnValue);
+  }
+
+  void mockValidationError({
+    required FieldValidationSpty validationSpy,
+    required String errorMessage,
+  }) {
+    mockValidationCall(validationSpy).thenReturn(errorMessage);
   }
 
   setUp(() {
@@ -44,14 +51,25 @@ void main() {
     mockField(validationSpy: validation1, returnValue: 'field1');
     mockField(validationSpy: validation2, returnValue: 'field2');
 
-    mockValidation(validationSpy: validation1, returnValue: null);
-    mockValidation(validationSpy: validation2, returnValue: '');
+    mockValidation(validationSpy: validation1, returnValue: '');
+    mockValidation(validationSpy: validation2, returnValue: null);
 
-    final errorFieldOne = sut.validate(field: 'field1', value: 'value');
-    final errorFieldTwo = sut.validate(field: 'field2', value: 'value');
+    final errorFieldOne = sut.validate(field: 'field1', value: 'any_value');
+    final errorFieldTwo = sut.validate(field: 'field2', value: 'any_value');
 
     expect(errorFieldOne, null);
-
     expect(errorFieldTwo, null);
+  });
+
+  test('should return error the first error', () {
+    mockField(validationSpy: validation1, returnValue: 'field1');
+    mockField(validationSpy: validation2, returnValue: 'field1');
+
+    mockValidationError(validationSpy: validation1, errorMessage: 'error_1');
+    mockValidationError(validationSpy: validation2, errorMessage: 'error_2');
+
+    final error = sut.validate(field: 'field1', value: 'value');
+
+    expect(error, 'error_1');
   });
 }

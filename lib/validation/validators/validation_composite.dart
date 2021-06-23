@@ -11,6 +11,17 @@ class ValidationComposite implements Validation {
 
   @override
   String? validate({required String field, required String? value}) {
-    return null;
+    String? error;
+
+    for (final validation in validations) {
+      print(validations.length);
+      error = validation.validate(value);
+      print(error);
+      if (error?.isNotEmpty ?? false) {
+        return error;
+      }
+    }
+
+    return error;
   }
 }
