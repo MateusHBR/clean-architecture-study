@@ -21,4 +21,10 @@ void main() {
 
     expect(error, null);
   });
+
+  test('should return null if email is valid', () {
+    final error = sut.validate(faker.internet.email());
+
+    expect(error, null);
+  });
 }
