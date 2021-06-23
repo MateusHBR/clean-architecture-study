@@ -226,17 +226,6 @@ void main() {
     await sut.authenticate();
   });
 
-  // test('should emit correct events on invalid credentials error', () async {
-  //   mockAuthentication(email: email, password: password);
-
-  //   sut.validateEmail(email);
-  //   sut.validatePassword(password);
-
-  //   expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-
-  //   await sut.authenticate();
-  // });
-
   test('should emit correct events on invalid credentials error', () async {
     mockAuthenticationError(
       email: email,
@@ -249,7 +238,29 @@ void main() {
 
     sut.errorStream.listen(
       expectAsync1(
-        (error) => expect(error, DomainError.invalidCredentials.description),
+        (error) => expect(error, 'Credenciais inválidas.'),
+      ),
+    );
+
+    expectLater(sut.isLoadingStream, emits(false));
+
+    await sut.authenticate();
+  });
+
+  test('should emit correct events on invalid credentials error', () async {
+    mockAuthenticationError(
+      email: email,
+      password: password,
+      error: DomainError.unexpected,
+    );
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    sut.errorStream.listen(
+      expectAsync1(
+        (error) =>
+            expect(error, 'Algo errado aconteceu. Tente novamente em breve.'),
       ),
     );
 
