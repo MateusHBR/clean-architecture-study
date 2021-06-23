@@ -61,8 +61,8 @@ void main() {
     expect(errorFieldTwo, null);
   });
 
-  test('should return error the first error', () {
-    mockField(validationSpy: validation1, returnValue: 'field1');
+  test('should return error the first error of the field', () {
+    mockField(validationSpy: validation1, returnValue: 'field2');
     mockField(validationSpy: validation2, returnValue: 'field1');
 
     mockValidationError(validationSpy: validation1, errorMessage: 'error_1');
@@ -70,6 +70,6 @@ void main() {
 
     final error = sut.validate(field: 'field1', value: 'value');
 
-    expect(error, 'error_1');
+    expect(error, 'error_2');
   });
 }
