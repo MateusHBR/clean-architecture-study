@@ -7,6 +7,10 @@ class RequiredFieldValidation implements FieldValidation {
 
   @override
   String? validate(String value) {
+    if (value.isEmpty) {
+      return 'Campo obrigatório.';
+    }
+
     return null;
   }
 }
@@ -24,5 +28,12 @@ void main() {
     final error = sut.validate('any-value');
 
     expect(error, null);
+  });
+  test('should return error string if value is empty', () {
+    final sut = RequiredFieldValidation('anyField');
+
+    final error = sut.validate('');
+
+    expect(error, 'Campo obrigatório.');
   });
 }
