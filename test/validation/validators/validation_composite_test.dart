@@ -57,7 +57,7 @@ void main() {
     final errorFieldOne = sut.validate(field: 'field1', value: 'any_value');
     final errorFieldTwo = sut.validate(field: 'field2', value: 'any_value');
 
-    expect(errorFieldOne, null);
+    expect(errorFieldOne, '');
     expect(errorFieldTwo, null);
   });
 
