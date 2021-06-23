@@ -268,4 +268,10 @@ void main() {
 
     await sut.authenticate();
   });
+
+  test('shen dispose, strem controller value must be true', () {
+    sut.dispose();
+
+    expect(sut.isStreamControllerClosed, true);
+  });
 }

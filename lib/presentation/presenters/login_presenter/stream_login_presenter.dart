@@ -23,6 +23,8 @@ class StreamLoginPresenter implements LoginPresenter {
 
   var _state = LoginState();
 
+  bool get isStreamControllerClosed => _controller.isClosed;
+
   Stream<String?> get emailErrorStream => _controller.stream
       .map(
         (state) => state.emailError,
@@ -99,6 +101,6 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _controller.close();
   }
 }
