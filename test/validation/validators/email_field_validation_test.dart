@@ -27,4 +27,10 @@ void main() {
 
     expect(error, null);
   });
+
+  test('should return error if email is invalid', () {
+    final error = sut.validate(faker.internet.domainName());
+
+    expect(error, 'Email inválido.');
+  });
 }

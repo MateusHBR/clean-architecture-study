@@ -13,6 +13,16 @@ class EmailFieldValidation implements FieldValidation {
       return null;
     }
 
+    final emailValidatorRegExp = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+    );
+
+    final isValid = emailValidatorRegExp.hasMatch(value!);
+
+    if (!isValid) {
+      return 'Email inválido.';
+    }
+
     return null;
   }
 }
