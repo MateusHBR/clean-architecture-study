@@ -6,8 +6,10 @@ class RequiredFieldValidation implements FieldValidation {
   RequiredFieldValidation(this.field);
 
   @override
-  String? validate(String value) {
-    if (value.isEmpty) {
+  String? validate(String? value) {
+    final fieldIsBlankOrNull = value?.isEmpty ?? true;
+
+    if (fieldIsBlankOrNull) {
       return 'Campo obrigatório.';
     }
 
@@ -18,7 +20,7 @@ class RequiredFieldValidation implements FieldValidation {
 abstract class FieldValidation {
   String get field;
 
-  String? validate(String value);
+  String? validate(String? value);
 }
 
 void main() {
@@ -33,8 +35,15 @@ void main() {
 
     expect(error, null);
   });
+
   test('should return error string if value is empty', () {
     final error = sut.validate('');
+
+    expect(error, 'Campo obrigatório.');
+  });
+
+  test('should return error string if value is null', () {
+    final error = sut.validate(null);
 
     expect(error, 'Campo obrigatório.');
   });
