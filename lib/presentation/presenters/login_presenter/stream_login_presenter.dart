@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'dart:io';
+
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 
 import '../../../domain/usecases/usecases.dart';
 
@@ -47,8 +48,11 @@ class StreamLoginPresenter implements LoginPresenter {
       .distinct();
 
   @override
-  // TODO: implement isErrorStream
-  Stream<String?> get isErrorStream => throw UnimplementedError();
+  Stream<String?> get errorStream => _controller.stream
+      .map(
+        (state) => state.stateError,
+      )
+      .distinct();
 
   void _notifyListeners() => _controller.add(_state);
 
@@ -74,18 +78,23 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   Future<void> authenticate() async {
+    _state.stateError = null;
     _state.loading = true;
     _notifyListeners();
 
-    await authenticationUseCase(
-      AuthenticationParams(
-        email: _state.email!,
-        password: _state.password!,
-      ),
-    );
-
-    _state.loading = false;
-    _notifyListeners();
+    try {
+      await authenticationUseCase(
+        AuthenticationParams(
+          email: _state.email!,
+          password: _state.password!,
+        ),
+      );
+    } on DomainError catch (error) {
+      _state.stateError = error.description;
+    } finally {
+      _state.loading = false;
+      _notifyListeners();
+    }
   }
 
   @override

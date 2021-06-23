@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -54,6 +55,14 @@ void main() {
     mockAuthenticationCall(email: email, password: password).thenAnswer(
       (_) async => AccountEntity(token: token ?? faker.guid.guid()),
     );
+  }
+
+  void mockAuthenticationError({
+    required String email,
+    required String password,
+    required DomainError error,
+  }) {
+    mockAuthenticationCall(email: email, password: password).thenThrow(error);
   }
 
   setUp(() {
@@ -213,6 +222,38 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    await sut.authenticate();
+  });
+
+  // test('should emit correct events on invalid credentials error', () async {
+  //   mockAuthentication(email: email, password: password);
+
+  //   sut.validateEmail(email);
+  //   sut.validatePassword(password);
+
+  //   expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+  //   await sut.authenticate();
+  // });
+
+  test('should emit correct events on invalid credentials error', () async {
+    mockAuthenticationError(
+      email: email,
+      password: password,
+      error: DomainError.invalidCredentials,
+    );
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    sut.errorStream.listen(
+      expectAsync1(
+        (error) => expect(error, DomainError.invalidCredentials.description),
+      ),
+    );
+
+    expectLater(sut.isLoadingStream, emits(false));
 
     await sut.authenticate();
   });

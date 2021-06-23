@@ -2,6 +2,7 @@ class LoginState {
   String? email;
   String? password;
   bool loading = false;
+  String? stateError;
 
   String? emailError;
   String? passwordError;

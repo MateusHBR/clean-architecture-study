@@ -51,7 +51,7 @@ void main() {
     );
 
     when(
-      () => presenter.isErrorStream,
+      () => presenter.errorStream,
     ).thenAnswer(
       (invocation) => mainErrorController.stream,
     );
