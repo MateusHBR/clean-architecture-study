@@ -1,6 +1,7 @@
 class LoginState {
   String? email;
   String? password;
+  bool loading = false;
 
   String? emailError;
   String? passwordError;

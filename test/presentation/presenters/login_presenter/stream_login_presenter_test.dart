@@ -1,8 +1,8 @@
-import 'package:course_clean_arch/domain/entities/entities.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+import 'package:course_clean_arch/domain/entities/entities.dart';
 import 'package:course_clean_arch/domain/usecases/usecases.dart';
 
 import 'package:course_clean_arch/presentation/presenters/presenters.dart';
@@ -13,6 +13,7 @@ class ValidationSpy extends Mock implements Validation {}
 class AuthenticationSpy extends Mock implements Authentication {}
 
 typedef ValidationExpectation = When<String?>;
+typedef AuthenticationExpectation = When<Future<AccountEntity>>;
 
 void main() {
   late StreamLoginPresenter sut;
@@ -30,6 +31,29 @@ void main() {
 
   void mockValidation({String? field, String? value}) {
     mockValidationCall(field: field).thenReturn(value);
+  }
+
+  AuthenticationExpectation mockAuthenticationCall({
+    required String email,
+    required String password,
+  }) =>
+      when(
+        () => authenticationUseCase(
+          AuthenticationParams(
+            email: email,
+            password: password,
+          ),
+        ),
+      );
+
+  void mockAuthentication({
+    required String email,
+    required String password,
+    String? token,
+  }) {
+    mockAuthenticationCall(email: email, password: password).thenAnswer(
+      (_) async => AccountEntity(token: token ?? faker.guid.guid()),
+    );
   }
 
   setUp(() {
@@ -168,13 +192,7 @@ void main() {
   });
 
   test('should call authentication with correct values', () async {
-    when(
-      () => authenticationUseCase(
-        AuthenticationParams(email: email, password: password),
-      ),
-    ).thenAnswer(
-      (_) async => AccountEntity(token: ''),
-    );
+    mockAuthentication(email: email, password: password);
 
     sut.validateEmail(email);
     sut.validatePassword(password);
@@ -186,5 +204,16 @@ void main() {
         AuthenticationParams(email: email, password: password),
       ),
     ).called(1);
+  });
+
+  test('should emit correct events on Authentication success', () async {
+    mockAuthentication(email: email, password: password);
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    await sut.authenticate();
   });
 }

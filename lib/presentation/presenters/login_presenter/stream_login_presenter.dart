@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import '../../../domain/usecases/usecases.dart';
 
@@ -39,6 +40,16 @@ class StreamLoginPresenter implements LoginPresenter {
       )
       .distinct();
 
+  Stream<bool> get isLoadingStream => _controller.stream
+      .map(
+        (state) => state.loading,
+      )
+      .distinct();
+
+  @override
+  // TODO: implement isErrorStream
+  Stream<String?> get isErrorStream => throw UnimplementedError();
+
   void _notifyListeners() => _controller.add(_state);
 
   void validateEmail(String email) {
@@ -63,21 +74,22 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   Future<void> authenticate() async {
+    _state.loading = true;
+    _notifyListeners();
+
     await authenticationUseCase(
-      AuthenticationParams(email: _state.email!, password: _state.password!),
+      AuthenticationParams(
+        email: _state.email!,
+        password: _state.password!,
+      ),
     );
+
+    _state.loading = false;
+    _notifyListeners();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
   }
-
-  @override
-  // TODO: implement isErrorStream
-  Stream<String?> get isErrorStream => throw UnimplementedError();
-
-  @override
-  // TODO: implement isLoadingStream
-  Stream<bool> get isLoadingStream => throw UnimplementedError();
 }
