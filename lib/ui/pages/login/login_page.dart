@@ -150,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           onChanged: widget.presenter.validateEmail,
           keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
         );
       },
     );

@@ -18,8 +18,8 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
     required this.authenticationUseCase,
   });
 
-  String? _email;
-  String? _password;
+  String _email = '';
+  String _password = '';
   final _emailErrorObserver = Rx<String?>(null);
   final _passwordErrorObserver = Rx<String?>(null);
   final _errorObserver = Rx<String?>(null);
@@ -45,8 +45,8 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
   void _validateForm() {
     final emailWithoutError = _emailErrorObserver.value == null;
     final passwordWithoutError = _passwordErrorObserver.value == null;
-    final emailIsNotNull = _email != null;
-    final passwordIsNotNull = _password != null;
+    final emailIsNotNull = _email.isNotEmpty;
+    final passwordIsNotNull = _password.isNotEmpty;
 
     _formValidObserver.value = emailWithoutError &&
         passwordWithoutError &&
@@ -82,8 +82,8 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
     try {
       await authenticationUseCase(
         AuthenticationParams(
-          email: _email!,
-          password: _password!,
+          email: _email,
+          password: _password,
         ),
       );
     } on DomainError catch (error) {
