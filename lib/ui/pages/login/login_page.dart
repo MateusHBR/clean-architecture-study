@@ -23,6 +23,14 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  void _hideKeyboard() {
+    final currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,13 +52,16 @@ class _LoginPageState extends State<LoginPage> {
             }
           });
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _header(context),
-                _body(context),
-              ],
+          return GestureDetector(
+            onTap: _hideKeyboard,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _header(context),
+                  _body(context),
+                ],
+              ),
             ),
           );
         },
@@ -180,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
         return ElevatedButton(
           onPressed: isEnabled
               ? () async {
-                  FocusScope.of(context).unfocus();
+                  _hideKeyboard();
 
                   await widget.presenter!.authenticate();
                 }
