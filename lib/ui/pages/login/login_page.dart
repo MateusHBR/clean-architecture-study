@@ -178,7 +178,22 @@ class _LoginPageState extends State<LoginPage> {
         final isEnabled = snapshot.data ?? false;
 
         return ElevatedButton(
-          onPressed: isEnabled ? widget.presenter!.authenticate : null,
+          onPressed: isEnabled
+              ? () async {
+                  FocusScope.of(context).unfocus();
+
+                  await widget.presenter!.authenticate();
+                }
+              : null,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.disabled)) {
+                return Colors.grey[300]!;
+              }
+
+              return Theme.of(context).primaryColor;
+            }),
+          ),
           child: Text(
             'Entrar'.toUpperCase(),
           ),
