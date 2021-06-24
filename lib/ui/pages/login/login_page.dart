@@ -13,13 +13,39 @@ class LoginPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageState createState() => _LoginPageState(presenter);
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final LoginPresenter presenter;
+
+  _LoginPageState(this.presenter);
+
+  @override
+  void initState() {
+    super.initState();
+
+    presenter.isLoadingStream.listen(
+      (isLoading) {
+        if (isLoading) {
+          showLoading(context);
+        } else {
+          hideLoading(context);
+        }
+      },
+    );
+
+    presenter.errorStream.listen((error) {
+      if (error == null) {
+        return;
+      }
+      showErrorMessage(context, error);
+    });
+  }
+
   @override
   void dispose() {
-    widget.presenter.dispose();
+    presenter.dispose();
     super.dispose();
   }
 
@@ -33,23 +59,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    widget.presenter.isLoadingStream.listen(
-      (isLoading) {
-        if (isLoading) {
-          showLoading(context);
-        } else {
-          hideLoading(context);
-        }
-      },
-    );
-
-    widget.presenter.errorStream.listen((error) {
-      print(error);
-      if (error != null) {
-        showErrorMessage(context, error);
-      }
-    });
-
     return Scaffold(
       body: GestureDetector(
         onTap: _hideKeyboard,
@@ -134,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _emailInputField() {
     return StreamBuilder<String?>(
-      stream: widget.presenter.emailErrorStream,
+      stream: presenter.emailErrorStream,
       builder: (context, snapshot) {
         final errorMessage =
             snapshot.data?.isEmpty == true ? null : snapshot.data;
@@ -148,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             errorText: errorMessage,
           ),
-          onChanged: widget.presenter.validateEmail,
+          onChanged: presenter.validateEmail,
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
         );
@@ -158,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _passwordInputField() {
     return StreamBuilder<String?>(
-      stream: widget.presenter.passwordErrorStream,
+      stream: presenter.passwordErrorStream,
       builder: (context, snapshot) {
         final errorMessage =
             snapshot.data?.isEmpty == true ? null : snapshot.data;
@@ -172,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             errorText: errorMessage,
           ),
-          onChanged: widget.presenter.validatePassword,
+          onChanged: presenter.validatePassword,
           obscureText: true,
         );
       },
@@ -181,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginButton() {
     return StreamBuilder<bool>(
-      stream: widget.presenter.isFormValidStream,
+      stream: presenter.isFormValidStream,
       initialData: false,
       builder: (context, snapshot) {
         final isEnabled = snapshot.data ?? false;
@@ -191,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
               ? () async {
                   _hideKeyboard();
 
-                  await widget.presenter.authenticate();
+                  await presenter.authenticate();
                 }
               : null,
           style: ButtonStyle(

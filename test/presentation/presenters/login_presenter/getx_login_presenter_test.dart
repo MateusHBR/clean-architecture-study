@@ -237,10 +237,9 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-    sut.errorStream.listen(
-      expectAsync1(
-        (error) => expect(error, 'Credenciais inválidas.'),
-      ),
+    expectLater(
+      sut.errorStream,
+      emitsInOrder(['Credenciais inválidas.', null]),
     );
 
     await sut.authenticate();
@@ -257,11 +256,9 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-    sut.errorStream.listen(
-      expectAsync1(
-        (error) =>
-            expect(error, 'Algo errado aconteceu. Tente novamente em breve.'),
-      ),
+    expectLater(
+      sut.errorStream,
+      emitsInOrder(['Algo errado aconteceu. Tente novamente em breve.', null]),
     );
 
     await sut.authenticate();
