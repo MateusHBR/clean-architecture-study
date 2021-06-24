@@ -17,7 +17,7 @@ typedef ValidationExpectation = When<String?>;
 typedef AuthenticationExpectation = When<Future<AccountEntity>>;
 
 void main() {
-  late StreamLoginPresenter sut;
+  late GetXLoginPresenter sut;
   late ValidationSpy validation;
   late AuthenticationSpy authenticationUseCase;
   late String email;
@@ -68,7 +68,7 @@ void main() {
   setUp(() {
     validation = ValidationSpy();
     authenticationUseCase = AuthenticationSpy();
-    sut = StreamLoginPresenter(
+    sut = GetXLoginPresenter(
       validation: validation,
       authenticationUseCase: authenticationUseCase,
     );
@@ -236,18 +236,17 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
 
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
     sut.errorStream.listen(
       expectAsync1(
         (error) => expect(error, 'Credenciais inválidas.'),
       ),
     );
 
-    expectLater(sut.isLoadingStream, emits(false));
-
     await sut.authenticate();
   });
 
-  test('should emit correct events on invalid credentials error', () async {
+  test('should emit correct events on unexpected error', () async {
     mockAuthenticationError(
       email: email,
       password: password,
@@ -257,6 +256,7 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
 
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
     sut.errorStream.listen(
       expectAsync1(
         (error) =>
@@ -264,14 +264,6 @@ void main() {
       ),
     );
 
-    expectLater(sut.isLoadingStream, emits(false));
-
     await sut.authenticate();
-  });
-
-  test('shen dispose, strem controller value must be true', () {
-    sut.dispose();
-
-    expect(sut.isStreamControllerClosed, true);
   });
 }
