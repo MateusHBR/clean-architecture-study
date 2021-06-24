@@ -5,7 +5,7 @@ import '../../components/components.dart';
 import './login_presenter.dart';
 
 class LoginPage extends StatefulWidget {
-  final LoginPresenter? presenter;
+  final LoginPresenter presenter;
 
   const LoginPage({
     Key? key,
@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
-    widget.presenter!.dispose();
+    widget.presenter.dispose();
     super.dispose();
   }
 
@@ -33,38 +33,35 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    widget.presenter.isLoadingStream.listen(
+      (isLoading) {
+        if (isLoading) {
+          showLoading(context);
+        } else {
+          hideLoading(context);
+        }
+      },
+    );
+
+    widget.presenter.errorStream.listen((error) {
+      print(error);
+      if (error != null) {
+        showErrorMessage(context, error);
+      }
+    });
+
     return Scaffold(
-      body: Builder(
-        builder: (context) {
-          widget.presenter!.isLoadingStream.listen(
-            (isLoading) {
-              if (isLoading) {
-                showLoading(context);
-              } else {
-                hideLoading(context);
-              }
-            },
-          );
-
-          widget.presenter!.errorStream.listen((error) {
-            if (error != null) {
-              showErrorMessage(context, error);
-            }
-          });
-
-          return GestureDetector(
-            onTap: _hideKeyboard,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _header(context),
-                  _body(context),
-                ],
-              ),
-            ),
-          );
-        },
+      body: GestureDetector(
+        onTap: _hideKeyboard,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _header(context),
+              _body(context),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -137,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _emailInputField() {
     return StreamBuilder<String?>(
-      stream: widget.presenter!.emailErrorStream,
+      stream: widget.presenter.emailErrorStream,
       builder: (context, snapshot) {
         final errorMessage =
             snapshot.data?.isEmpty == true ? null : snapshot.data;
@@ -151,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             errorText: errorMessage,
           ),
-          onChanged: widget.presenter!.validateEmail,
+          onChanged: widget.presenter.validateEmail,
           keyboardType: TextInputType.emailAddress,
         );
       },
@@ -160,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _passwordInputField() {
     return StreamBuilder<String?>(
-      stream: widget.presenter!.passwordErrorStream,
+      stream: widget.presenter.passwordErrorStream,
       builder: (context, snapshot) {
         final errorMessage =
             snapshot.data?.isEmpty == true ? null : snapshot.data;
@@ -174,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             errorText: errorMessage,
           ),
-          onChanged: widget.presenter!.validatePassword,
+          onChanged: widget.presenter.validatePassword,
           obscureText: true,
         );
       },
@@ -183,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginButton() {
     return StreamBuilder<bool>(
-      stream: widget.presenter!.isFormValidStream,
+      stream: widget.presenter.isFormValidStream,
       initialData: false,
       builder: (context, snapshot) {
         final isEnabled = snapshot.data ?? false;
@@ -193,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
               ? () async {
                   _hideKeyboard();
 
-                  await widget.presenter!.authenticate();
+                  await widget.presenter.authenticate();
                 }
               : null,
           style: ButtonStyle(
