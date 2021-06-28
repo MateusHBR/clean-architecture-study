@@ -27,7 +27,7 @@ void main() {
 
   SaveSecureExpectation mockExpectation() {
     return when(
-      () => saveSecureCacheStorage(
+      () => saveSecureCacheStorage.saveSecure(
         key: any(named: 'key'),
         value: any(named: 'value'),
       ),
@@ -48,7 +48,8 @@ void main() {
     await sut(account);
 
     verify(
-      () => saveSecureCacheStorage(key: 'token', value: account.token),
+      () =>
+          saveSecureCacheStorage.saveSecure(key: 'token', value: account.token),
     ).called(1);
   });
 

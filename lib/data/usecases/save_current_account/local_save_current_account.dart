@@ -14,7 +14,10 @@ class LocalSaveCurrentAccount implements SaveCurrentAccount {
   @override
   Future<void> call(AccountEntity account) async {
     try {
-      await saveSecureCacheStorage(key: 'token', value: account.token);
+      await saveSecureCacheStorage.saveSecure(
+        key: 'token',
+        value: account.token,
+      );
     } catch (error) {
       throw DomainError.unexpected;
     }
