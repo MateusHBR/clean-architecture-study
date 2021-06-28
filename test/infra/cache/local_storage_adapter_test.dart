@@ -25,7 +25,10 @@ void main() {
 
   VoidExpectation mockSaveSecure() {
     return when(
-      () => flutterSecureStorage.write(key: key, value: value),
+      () => flutterSecureStorage.write(
+        key: any(named: 'key'),
+        value: any(named: 'value'),
+      ),
     );
   }
 
@@ -35,11 +38,23 @@ void main() {
     );
   }
 
+  void mockSaveSecureError() {
+    mockSaveSecure().thenThrow(Exception());
+  }
+
   test('should call save secure with correct values', () async {
     mockSaveSecureSuccess();
 
     await sut.saveSecure(key: key, value: value);
 
     verify(() => flutterSecureStorage.write(key: key, value: value));
+  });
+
+  test('should throw if save secure throws', () async {
+    mockSaveSecureError();
+
+    final future = sut.saveSecure(key: key, value: value);
+
+    expect(future, throwsA(isA<Exception>()));
   });
 }
