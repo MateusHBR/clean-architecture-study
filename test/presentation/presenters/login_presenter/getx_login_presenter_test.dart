@@ -321,4 +321,17 @@ void main() {
 
     await sut.authenticate();
   });
+
+  test('should change page on success', () async {
+    mockAuthentication(email: email, password: password);
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    sut.pushNamedAndRemoveUntilStream.listen(
+      expectAsync1((route) => expect(route, '/surveys')),
+    );
+
+    await sut.authenticate();
+  });
 }

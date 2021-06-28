@@ -27,6 +27,7 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
   final _errorObserver = Rx<String?>(null);
   final _formValidObserver = Rx<bool>(false);
   final _loadingObserver = Rx<bool>(false);
+  final _pushNamedAndRemoveUntilStreamObserver = Rx<String?>(null);
 
   @override
   Stream<String?> get emailErrorStream => _emailErrorObserver.stream.distinct();
@@ -44,6 +45,10 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
 
   @override
   Stream<String?> get errorStream => _errorObserver.stream.distinct();
+
+  @override
+  Stream<String?> get pushNamedAndRemoveUntilStream =>
+      _pushNamedAndRemoveUntilStreamObserver.stream.distinct();
 
   void _validateForm() {
     final emailWithoutError = _emailErrorObserver.value == null;
@@ -91,6 +96,8 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
       );
 
       saveCurrentAccountUseCase(token);
+
+      _pushNamedAndRemoveUntilStreamObserver.value = '/surveys';
     } on DomainError catch (error) {
       _errorObserver.value = error.description;
       _errorObserver.value = null;

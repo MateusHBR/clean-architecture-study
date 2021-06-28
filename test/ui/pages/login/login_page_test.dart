@@ -9,6 +9,8 @@ import 'package:mocktail/mocktail.dart';
 
 class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
+class NavigatorObserverSpy extends Mock implements NavigatorObserver {}
+
 void main() {
   late LoginPresenter presenter;
   late StreamController<String?> emailErrorController;
@@ -16,6 +18,8 @@ void main() {
   late StreamController<bool> isFormValidController;
   late StreamController<bool> isLoadingController;
   late StreamController<String> mainErrorController;
+  late StreamController<String?> pushNamedAndRemoveUntilStream;
+  late NavigatorObserverSpy navigatorObserver;
 
   void initializeStreams() {
     emailErrorController = StreamController<String?>();
@@ -23,6 +27,7 @@ void main() {
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
     mainErrorController = StreamController<String>();
+    pushNamedAndRemoveUntilStream = StreamController<String?>();
   }
 
   void mockStreams() {
@@ -55,6 +60,12 @@ void main() {
     ).thenAnswer(
       (invocation) => mainErrorController.stream,
     );
+
+    when(
+      () => presenter.pushNamedAndRemoveUntilStream,
+    ).thenAnswer(
+      (invocation) => pushNamedAndRemoveUntilStream.stream,
+    );
   }
 
   void closeStreams() {
@@ -63,18 +74,25 @@ void main() {
     isFormValidController.close();
     isLoadingController.close();
     mainErrorController.close();
+    pushNamedAndRemoveUntilStream.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = LoginPresenterSpy();
+    navigatorObserver = NavigatorObserverSpy();
 
     initializeStreams();
     mockStreams();
 
     final loginPage = MaterialApp(
-      home: LoginPage(
-        presenter: presenter,
-      ),
+      navigatorObservers: [
+        navigatorObserver,
+      ],
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginPage(presenter: presenter),
+        '/surveys': (context) => Scaffold(body: Text('Enquetes')),
+      },
     );
     await tester.pumpWidget(loginPage);
   }
@@ -406,6 +424,27 @@ void main() {
       addTearDown(() {
         verify(presenter.dispose).called(1);
       });
+    },
+  );
+
+  testWidgets(
+    'should change page',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+      final newPage = '/surveys';
+
+      when(
+        () => navigatorObserver.navigator!.pushNamedAndRemoveUntil(
+          newPage,
+          (route) => false,
+        ),
+      ).thenAnswer((_) async => {});
+
+      pushNamedAndRemoveUntilStream.add(newPage);
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Enquetes'), findsOneWidget);
     },
   );
 }

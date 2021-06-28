@@ -41,6 +41,15 @@ class _LoginPageState extends State<LoginPage> {
       }
       showErrorMessage(context, error);
     });
+
+    presenter.pushNamedAndRemoveUntilStream.listen((page) {
+      if (page?.isNotEmpty ?? false) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          page!,
+          (route) => false,
+        );
+      }
+    });
   }
 
   @override
