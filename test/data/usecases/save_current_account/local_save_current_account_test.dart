@@ -10,19 +10,39 @@ import 'package:course_clean_arch/domain/entities/account_entity.dart';
 class SaveSecureCacheStorageSpy extends Mock implements SaveSecureCacheStorage {
 }
 
+typedef SaveSecureExpectation = When<void>;
 void main() {
-  test('Should call saveSecureCacheStorage with correct values', () async {
-    final saveSecureCacheStorage = SaveSecureCacheStorageSpy();
-    final sut =
-        LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
-    final account = AccountEntity(token: faker.guid.guid());
+  late SaveSecureCacheStorageSpy saveSecureCacheStorage;
+  late LocalSaveCurrentAccount sut;
+  late AccountEntity account;
 
-    when(
+  setUp(() {
+    saveSecureCacheStorage = SaveSecureCacheStorageSpy();
+    sut = LocalSaveCurrentAccount(
+      saveSecureCacheStorage: saveSecureCacheStorage,
+    );
+    account = AccountEntity(token: faker.guid.guid());
+  });
+
+  SaveSecureExpectation mockExpectation() {
+    return when(
       () => saveSecureCacheStorage(
         key: any(named: 'key'),
         value: any(named: 'value'),
       ),
-    ).thenAnswer((_) async => {});
+    );
+  }
+
+  void mockSucess() {
+    mockExpectation().thenAnswer((_) async => {});
+  }
+
+  void mockError() {
+    mockExpectation().thenThrow(Exception());
+  }
+
+  test('Should call saveSecureCacheStorage with correct values', () async {
+    mockSucess();
 
     await sut(account);
 
@@ -33,17 +53,7 @@ void main() {
 
   test('Should throw unexpected error if saveSecureCacheStorage throws',
       () async {
-    final saveSecureCacheStorage = SaveSecureCacheStorageSpy();
-    final sut =
-        LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
-    final account = AccountEntity(token: faker.guid.guid());
-
-    when(
-      () => saveSecureCacheStorage(
-        key: any(named: 'key'),
-        value: any(named: 'value'),
-      ),
-    ).thenThrow(Exception());
+    mockError();
 
     final future = sut(account);
 
