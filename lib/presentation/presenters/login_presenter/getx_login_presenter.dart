@@ -12,10 +12,12 @@ import '../../protocols/protocols.dart';
 class GetXLoginPresenter extends GetxController implements LoginPresenter {
   final Validation validation;
   final Authentication authenticationUseCase;
+  final SaveCurrentAccount saveCurrentAccountUseCase;
 
   GetXLoginPresenter({
     required this.validation,
     required this.authenticationUseCase,
+    required this.saveCurrentAccountUseCase,
   });
 
   String _email = '';
@@ -80,12 +82,14 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
     _loadingObserver.value = true;
 
     try {
-      await authenticationUseCase(
+      final token = await authenticationUseCase(
         AuthenticationParams(
           email: _email,
           password: _password,
         ),
       );
+
+      saveCurrentAccountUseCase(token);
     } on DomainError catch (error) {
       _errorObserver.value = error.description;
       _errorObserver.value = null;

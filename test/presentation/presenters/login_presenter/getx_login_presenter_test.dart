@@ -13,15 +13,32 @@ class ValidationSpy extends Mock implements Validation {}
 
 class AuthenticationSpy extends Mock implements Authentication {}
 
+class SaveCurrentAccountSpy extends Mock implements SaveCurrentAccount {}
+
 typedef ValidationExpectation = When<String?>;
 typedef AuthenticationExpectation = When<Future<AccountEntity>>;
+typedef FutureVoidExpectation = When<Future<void>>;
 
 void main() {
   late GetXLoginPresenter sut;
   late ValidationSpy validation;
   late AuthenticationSpy authenticationUseCase;
+  late SaveCurrentAccountSpy saveCurrentAccountUseCase;
   late String email;
   late String password;
+  late String defaultToken;
+
+  FutureVoidExpectation mockSaveCurrentAccountCall(String token) {
+    return when(
+      () => saveCurrentAccountUseCase(
+        AccountEntity(token: token),
+      ),
+    );
+  }
+
+  void mockSaveCurrentAccountSuccess({required String token}) {
+    mockSaveCurrentAccountCall(token).thenAnswer((_) async => {});
+  }
 
   ValidationExpectation mockValidationCall({String? field}) => when(
         () => validation.validate(
@@ -53,7 +70,7 @@ void main() {
     String? token,
   }) {
     mockAuthenticationCall(email: email, password: password).thenAnswer(
-      (_) async => AccountEntity(token: token ?? faker.guid.guid()),
+      (_) async => AccountEntity(token: token ?? defaultToken),
     );
   }
 
@@ -68,14 +85,18 @@ void main() {
   setUp(() {
     validation = ValidationSpy();
     authenticationUseCase = AuthenticationSpy();
+    saveCurrentAccountUseCase = SaveCurrentAccountSpy();
     sut = GetXLoginPresenter(
       validation: validation,
       authenticationUseCase: authenticationUseCase,
+      saveCurrentAccountUseCase: saveCurrentAccountUseCase,
     );
     email = faker.internet.email();
     password = faker.internet.password();
+    defaultToken = faker.guid.guid();
 
     mockValidation();
+    mockSaveCurrentAccountSuccess(token: defaultToken);
   });
 
   test('should call validation with correct email', () {
@@ -262,5 +283,21 @@ void main() {
     );
 
     await sut.authenticate();
+  });
+
+  test('should call SaveCurrentAccount with correct value', () async {
+    final token = faker.guid.guid();
+
+    mockAuthentication(email: email, password: password, token: token);
+    mockSaveCurrentAccountSuccess(token: token);
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    await sut.authenticate();
+
+    verify(
+      () => saveCurrentAccountUseCase(AccountEntity(token: token)),
+    ).called(1);
   });
 }
