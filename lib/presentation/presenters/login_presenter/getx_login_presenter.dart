@@ -29,10 +29,11 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
   final _loadingObserver = Rx<bool>(false);
 
   @override
-  Stream<String?> get emailErrorStream => _emailErrorObserver.stream;
+  Stream<String?> get emailErrorStream => _emailErrorObserver.stream.distinct();
 
   @override
-  Stream<String?> get passwordErrorStream => _passwordErrorObserver.stream;
+  Stream<String?> get passwordErrorStream =>
+      _passwordErrorObserver.stream.distinct();
 
   @override
   Stream<bool> get isFormValidStream =>
@@ -42,7 +43,7 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
   Stream<bool> get isLoadingStream => _loadingObserver.stream as Stream<bool>;
 
   @override
-  Stream<String?> get errorStream => _errorObserver.stream;
+  Stream<String?> get errorStream => _errorObserver.stream.distinct();
 
   void _validateForm() {
     final emailWithoutError = _emailErrorObserver.value == null;

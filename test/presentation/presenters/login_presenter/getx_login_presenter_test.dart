@@ -40,6 +40,10 @@ void main() {
     mockSaveCurrentAccountCall(token).thenAnswer((_) async => {});
   }
 
+  void mockSaveCurrentAccountError({required String token}) {
+    mockSaveCurrentAccountCall(token).thenThrow(DomainError.unexpected);
+  }
+
   ValidationExpectation mockValidationCall({String? field}) => when(
         () => validation.validate(
           field: field == null ? any(named: 'field') : field,
@@ -299,5 +303,22 @@ void main() {
     verify(
       () => saveCurrentAccountUseCase(AccountEntity(token: token)),
     ).called(1);
+  });
+
+  test('should call UnexpectedError if saveCurrentAccount fails', () async {
+    final token = faker.guid.guid();
+
+    mockAuthentication(email: email, password: password, token: token);
+    mockSaveCurrentAccountError(token: token);
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(
+      sut.errorStream,
+      emitsInOrder(['Algo errado aconteceu. Tente novamente em breve.', null]),
+    );
+
+    await sut.authenticate();
   });
 }
