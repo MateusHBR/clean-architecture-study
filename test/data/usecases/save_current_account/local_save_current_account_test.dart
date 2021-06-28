@@ -1,10 +1,11 @@
-import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
 
 import 'package:course_clean_arch/data/usecases/save_current_account/save_current_account.dart';
 
+import 'package:course_clean_arch/data/cache/cache.dart';
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:course_clean_arch/domain/entities/account_entity.dart';
 
 class SaveSecureCacheStorageSpy extends Mock implements SaveSecureCacheStorage {
