@@ -1,10 +1,12 @@
-import 'package:course_clean_arch/domain/entities/entities.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import 'package:course_clean_arch/data/cache/fetch_secure_cache_storage.dart';
+import 'package:course_clean_arch/data/cache/cache.dart';
 import 'package:course_clean_arch/data/usecases/usecases.dart';
+
+import 'package:course_clean_arch/domain/entities/entities.dart';
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 
 class FetchSecureCacheStorageMock extends Mock
     implements FetchSecureCacheStorage {}
@@ -26,6 +28,10 @@ void main() {
     mockfetchSecure().thenAnswer(
       (_) async => token!,
     );
+  }
+
+  void mockfetchSecureError() {
+    mockfetchSecure().thenThrow(Exception());
   }
 
   setUp(() {
@@ -55,5 +61,14 @@ void main() {
       account,
       AccountEntity(token: token),
     );
+  });
+
+  test('should throw UnexpectedError if FetchSecureCacheStorage throws',
+      () async {
+    mockfetchSecureError();
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
