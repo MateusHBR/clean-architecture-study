@@ -23,38 +23,54 @@ void main() {
     value = faker.guid.guid();
   });
 
-  VoidExpectation mockSaveSecure() {
-    return when(
-      () => flutterSecureStorage.write(
-        key: any(named: 'key'),
-        value: any(named: 'value'),
-      ),
-    );
-  }
+  group('save secure', () {
+    VoidExpectation mockSaveSecure() {
+      return when(
+        () => flutterSecureStorage.write(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+        ),
+      );
+    }
 
-  void mockSaveSecureSuccess() {
-    mockSaveSecure().thenAnswer(
-      (_) async => {},
-    );
-  }
+    void mockSaveSecureSuccess() {
+      mockSaveSecure().thenAnswer(
+        (_) async => {},
+      );
+    }
 
-  void mockSaveSecureError() {
-    mockSaveSecure().thenThrow(Exception());
-  }
+    void mockSaveSecureError() {
+      mockSaveSecure().thenThrow(Exception());
+    }
 
-  test('should call save secure with correct values', () async {
-    mockSaveSecureSuccess();
+    test('should call save secure with correct values', () async {
+      mockSaveSecureSuccess();
 
-    await sut.saveSecure(key: key, value: value);
+      await sut.saveSecure(key: key, value: value);
 
-    verify(() => flutterSecureStorage.write(key: key, value: value));
+      verify(() => flutterSecureStorage.write(key: key, value: value));
+    });
+
+    test('should throw if save secure throws', () async {
+      mockSaveSecureError();
+
+      final future = sut.saveSecure(key: key, value: value);
+
+      expect(future, throwsA(isA<Exception>()));
+    });
   });
 
-  test('should throw if save secure throws', () async {
-    mockSaveSecureError();
+  group('fetch secure', () {
+    test('should call fetch secure with correct values', () async {
+      when(
+        () => flutterSecureStorage.read(key: key),
+      ).thenAnswer(
+        (_) async => "",
+      );
 
-    final future = sut.saveSecure(key: key, value: value);
+      await sut.fetchSecure(key);
 
-    expect(future, throwsA(isA<Exception>()));
+      verify(() => flutterSecureStorage.read(key: key));
+    });
   });
 }
