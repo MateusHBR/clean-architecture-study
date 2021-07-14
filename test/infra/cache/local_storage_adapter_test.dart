@@ -7,7 +7,8 @@ import 'package:course_clean_arch/infra/cache/cache.dart';
 
 class FlutterSecureStorageSpy extends Mock implements FlutterSecureStorage {}
 
-typedef VoidExpectation = When<void>;
+typedef VoidExpectation = When<Future<void>>;
+typedef StringExpectation = When<Future<String?>>;
 
 void main() {
   late FlutterSecureStorageSpy flutterSecureStorage;
@@ -61,16 +62,31 @@ void main() {
   });
 
   group('fetch secure', () {
-    test('should call fetch secure with correct values', () async {
-      when(
-        () => flutterSecureStorage.read(key: key),
-      ).thenAnswer(
-        (_) async => "",
+    StringExpectation mockFetchSecure() {
+      return when(() => flutterSecureStorage.read(key: key));
+    }
+
+    void mockFetchSecureSuccess({String? response}) {
+      mockFetchSecure().thenAnswer(
+        (_) async => response,
       );
+    }
+
+    test('should call fetch secure with correct values', () async {
+      mockFetchSecureSuccess();
 
       await sut.fetchSecure(key);
 
       verify(() => flutterSecureStorage.read(key: key));
+    });
+    test('should return correct value on success', () async {
+      final expectedValue = faker.guid.guid();
+
+      mockFetchSecureSuccess(response: expectedValue);
+
+      final value = await sut.fetchSecure(key);
+
+      expect(value, expectedValue);
     });
   });
 }
