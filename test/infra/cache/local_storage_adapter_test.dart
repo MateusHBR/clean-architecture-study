@@ -72,6 +72,10 @@ void main() {
       );
     }
 
+    void mockFetchSecureError() {
+      mockFetchSecure().thenThrow(Exception());
+    }
+
     test('should call fetch secure with correct values', () async {
       mockFetchSecureSuccess();
 
@@ -79,6 +83,7 @@ void main() {
 
       verify(() => flutterSecureStorage.read(key: key));
     });
+
     test('should return correct value on success', () async {
       final expectedValue = faker.guid.guid();
 
@@ -87,6 +92,14 @@ void main() {
       final value = await sut.fetchSecure(key);
 
       expect(value, expectedValue);
+    });
+
+    test('should throw if fetch secure throws', () async {
+      mockFetchSecureError();
+
+      final future = sut.fetchSecure(key);
+
+      expect(future, throwsA(isA<Exception>()));
     });
   });
 }
