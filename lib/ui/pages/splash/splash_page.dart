@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'splash_presenter.dart';
+
 class SplashPage extends StatelessWidget {
-  SplashPage({Key? key}) : super(key: key);
+  final SplashPresenter presenter;
+
+  SplashPage({
+    Key? key,
+    required this.presenter,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    presenter.loadCurrentAccount();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('4Dev'),
