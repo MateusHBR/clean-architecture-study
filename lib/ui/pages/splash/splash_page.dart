@@ -12,6 +12,12 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    presenter.pushReplacementStream.listen((page) {
+      if (page?.isNotEmpty == true) {
+        Navigator.of(context).pushReplacementNamed(page!);
+      }
+    });
+
     presenter.loadCurrentAccount();
 
     return Scaffold(
