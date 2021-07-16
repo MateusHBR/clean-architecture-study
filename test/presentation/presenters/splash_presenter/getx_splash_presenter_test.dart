@@ -10,14 +10,17 @@ import 'package:course_clean_arch/presentation/presenters/presenters.dart';
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
 void main() {
-  setUp(() {});
+  late LoadCurrentAccountSpy loadCurrentAccountUsecase;
+  late GetxSplashPresenter sut;
 
-  test('should call LoadCurrentAccount', () async {
-    final loadCurrentAccountUsecase = LoadCurrentAccountSpy();
-    final sut = GetxSplashPresenter(
+  setUp(() {
+    loadCurrentAccountUsecase = LoadCurrentAccountSpy();
+    sut = GetxSplashPresenter(
       loadCurrentAccountUsecase: loadCurrentAccountUsecase,
     );
+  });
 
+  test('should call LoadCurrentAccount', () async {
     when(
       () => loadCurrentAccountUsecase(),
     ).thenAnswer(
