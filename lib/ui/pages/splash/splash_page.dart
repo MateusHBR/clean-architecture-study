@@ -18,7 +18,7 @@ class SplashPage extends StatelessWidget {
       }
     });
 
-    presenter.loadCurrentAccount();
+    presenter.checkAccount();
 
     return Scaffold(
       appBar: AppBar(

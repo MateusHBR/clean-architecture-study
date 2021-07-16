@@ -17,7 +17,7 @@ void main() {
 
   void mockLoadCurrentAccount() {
     when(
-      () => presenter.loadCurrentAccount(),
+      () => presenter.checkAccount(),
     ).thenAnswer(
       (invocation) async => {},
     );
@@ -75,7 +75,7 @@ void main() {
     await loadPage(tester);
 
     verify(
-      () => presenter.loadCurrentAccount(),
+      () => presenter.checkAccount(),
     ).called(1);
   });
 
