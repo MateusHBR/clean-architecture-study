@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:get/state_manager.dart';
 
 import '../../../domain/usecases/usecases.dart';
@@ -16,11 +17,15 @@ class GetxSplashPresenter implements SplashPresenter {
 
   @override
   Future<void> checkAccount() async {
-    final accountResponse = await loadCurrentAccountUsecase();
+    try {
+      final accountResponse = await loadCurrentAccountUsecase();
 
-    if (accountResponse != null) {
-      _pushReplacementSubject.value = '/surveys';
-    } else {
+      if (accountResponse != null) {
+        _pushReplacementSubject.value = '/surveys';
+      } else {
+        _pushReplacementSubject.value = '/login';
+      }
+    } on DomainError {
       _pushReplacementSubject.value = '/login';
     }
   }

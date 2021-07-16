@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import 'package:course_clean_arch/domain/usecases/usecases.dart';
 import 'package:course_clean_arch/domain/entities/entities.dart';
+import 'package:course_clean_arch/domain/helpers/domain_error.dart';
 
 import 'package:course_clean_arch/presentation/presenters/presenters.dart';
 
@@ -24,6 +25,10 @@ void main() {
     mockLoadCurrentAccount().thenAnswer(
       (_) async => accountEntityResult,
     );
+  }
+
+  void mockLoadCurrentAccountError() {
+    mockLoadCurrentAccount().thenThrow(DomainError.unexpected);
   }
 
   setUp(() {
@@ -51,6 +56,14 @@ void main() {
 
   test('should go to login page on null result', () async {
     mockLoadCurrentAccountSuccess(accountEntityResult: null);
+
+    expectLater(sut.pushReplacementStream, emits('/login'));
+
+    await sut.checkAccount();
+  });
+
+  test('should go to login page on error', () async {
+    mockLoadCurrentAccountError();
 
     expectLater(sut.pushReplacementStream, emits('/login'));
 
