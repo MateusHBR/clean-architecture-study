@@ -18,6 +18,10 @@ class GetxSplashPresenter implements SplashPresenter {
   Future<void> checkAccount() async {
     final accountResponse = await loadCurrentAccountUsecase();
 
-    _pushReplacementSubject.value = '/surveys';
+    if (accountResponse != null) {
+      _pushReplacementSubject.value = '/surveys';
+    } else {
+      _pushReplacementSubject.value = '/login';
+    }
   }
 }

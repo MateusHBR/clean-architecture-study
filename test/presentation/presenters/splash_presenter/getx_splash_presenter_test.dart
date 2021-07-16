@@ -18,9 +18,11 @@ void main() {
         () => loadCurrentAccountUsecase(),
       );
 
-  void mockLoadCurrentAccountSuccess({String? token}) {
+  void mockLoadCurrentAccountSuccess({
+    required AccountEntity? accountEntityResult,
+  }) {
     mockLoadCurrentAccount().thenAnswer(
-      (_) async => AccountEntity(token: token ?? faker.guid.guid()),
+      (_) async => accountEntityResult,
     );
   }
 
@@ -30,12 +32,12 @@ void main() {
       loadCurrentAccountUsecase: loadCurrentAccountUsecase,
     );
 
-    mockLoadCurrentAccountSuccess();
+    mockLoadCurrentAccountSuccess(
+      accountEntityResult: AccountEntity(token: faker.guid.guid()),
+    );
   });
 
   test('should call LoadCurrentAccount', () async {
-    mockLoadCurrentAccountSuccess();
-
     await sut.checkAccount();
 
     verify(() => loadCurrentAccountUsecase()).called(1);
@@ -43,6 +45,14 @@ void main() {
 
   test('should go to surveys page on success', () async {
     expectLater(sut.pushReplacementStream, emits('/surveys'));
+
+    await sut.checkAccount();
+  });
+
+  test('should go to login page on null result', () async {
+    mockLoadCurrentAccountSuccess(accountEntityResult: null);
+
+    expectLater(sut.pushReplacementStream, emits('/login'));
 
     await sut.checkAccount();
   });
