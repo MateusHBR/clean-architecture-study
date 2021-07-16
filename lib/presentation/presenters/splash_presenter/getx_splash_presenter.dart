@@ -17,5 +17,7 @@ class GetxSplashPresenter implements SplashPresenter {
   @override
   Future<void> checkAccount() async {
     final accountResponse = await loadCurrentAccountUsecase();
+
+    _pushReplacementSubject.value = '/surveys';
   }
 }
