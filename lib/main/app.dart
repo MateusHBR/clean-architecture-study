@@ -11,8 +11,9 @@ class App extends StatelessWidget {
       title: 'Course Clean Architecture',
       theme: AppTheme.theme,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      initialRoute: '/',
       routes: {
+        '/': (context) => makeSplashPage(),
         '/login': (context) => makeLoginPage(),
         '/surveys': (context) => Scaffold(body: Text('Enquetes')),
       },

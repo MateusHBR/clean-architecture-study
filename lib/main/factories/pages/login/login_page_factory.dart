@@ -6,6 +6,6 @@ import 'login_presenter_factory.dart';
 
 Widget makeLoginPage() {
   return LoginPage(
-    presenter: makeGetXLoginPresenter(),
+    presenter: makeGetxLoginPresenter(),
   );
 }

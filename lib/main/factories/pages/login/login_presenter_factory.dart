@@ -5,8 +5,8 @@ import '../../usecases/usecase.dart';
 
 import 'login_validation_factory.dart';
 
-LoginPresenter makeGetXLoginPresenter() {
-  return GetXLoginPresenter(
+LoginPresenter makeGetxLoginPresenter() {
+  return GetxLoginPresenter(
     authenticationUseCase: makeRemoteAuthentication(),
     validation: makeLoginValidation(),
     saveCurrentAccountUseCase: makeLocalSaveCurrentAccount(),

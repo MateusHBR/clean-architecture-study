@@ -9,12 +9,12 @@ import '../../../ui/pages/pages.dart';
 
 import '../../protocols/protocols.dart';
 
-class GetXLoginPresenter extends GetxController implements LoginPresenter {
+class GetxLoginPresenter extends GetxController implements LoginPresenter {
   final Validation validation;
   final Authentication authenticationUseCase;
   final SaveCurrentAccount saveCurrentAccountUseCase;
 
-  GetXLoginPresenter({
+  GetxLoginPresenter({
     required this.validation,
     required this.authenticationUseCase,
     required this.saveCurrentAccountUseCase,

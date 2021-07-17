@@ -20,7 +20,7 @@ typedef AuthenticationExpectation = When<Future<AccountEntity>>;
 typedef FutureVoidExpectation = When<Future<void>>;
 
 void main() {
-  late GetXLoginPresenter sut;
+  late GetxLoginPresenter sut;
   late ValidationSpy validation;
   late AuthenticationSpy authenticationUseCase;
   late SaveCurrentAccountSpy saveCurrentAccountUseCase;
@@ -90,7 +90,7 @@ void main() {
     validation = ValidationSpy();
     authenticationUseCase = AuthenticationSpy();
     saveCurrentAccountUseCase = SaveCurrentAccountSpy();
-    sut = GetXLoginPresenter(
+    sut = GetxLoginPresenter(
       validation: validation,
       authenticationUseCase: authenticationUseCase,
       saveCurrentAccountUseCase: saveCurrentAccountUseCase,
