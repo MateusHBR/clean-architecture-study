@@ -16,10 +16,12 @@ class GetxSplashPresenter implements SplashPresenter {
   Stream<String?> get pushReplacementStream => _pushReplacementSubject.stream;
 
   @override
-  Future<void> checkAccount() async {
+  Future<void> checkAccount({int durationInSeconds = 2}) async {
+    await Future.delayed(Duration(seconds: durationInSeconds));
+
     try {
       final accountResponse = await loadCurrentAccountUsecase();
-
+      print(accountResponse?.token);
       if (accountResponse != null) {
         _pushReplacementSubject.value = '/surveys';
       } else {
