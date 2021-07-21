@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/utils/i18n/i18n.dart';
 import 'package:flutter/material.dart';
 
 void showLoading(BuildContext context) {
@@ -19,7 +20,7 @@ Widget _loadingDialogWidget() {
           CircularProgressIndicator(),
           const SizedBox(height: 10),
           Text(
-            'Aguarde...',
+            R.strings.wait,
             textAlign: TextAlign.center,
           ),
         ],

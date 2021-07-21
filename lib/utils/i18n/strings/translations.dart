@@ -31,6 +31,7 @@ abstract class Translations {
   String get unexpectedErrorTryAgain;
   //V
   //W
+  String get wait;
   //X
   //Y
   //Z

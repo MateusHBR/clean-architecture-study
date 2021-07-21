@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:course_clean_arch/utils/i18n/i18n.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -108,7 +109,7 @@ void main() {
       await loadPage(tester);
 
       final emailTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Email'),
+        of: find.bySemanticsLabel(R.strings.email),
         matching: find.byType(Text),
       );
       expect(
@@ -119,7 +120,7 @@ void main() {
       );
 
       final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Senha'),
+        of: find.bySemanticsLabel(R.strings.password),
         matching: find.byType(Text),
       );
       expect(
@@ -149,11 +150,12 @@ void main() {
       );
 
       final email = faker.internet.email();
-      await tester.enterText(find.bySemanticsLabel('Email'), email);
+      await tester.enterText(find.bySemanticsLabel(R.strings.email), email);
       verify(() => presenter.validateEmail(email));
 
       final password = faker.internet.password();
-      await tester.enterText(find.bySemanticsLabel('Senha'), password);
+      await tester.enterText(
+          find.bySemanticsLabel(R.strings.password), password);
       verify(() => presenter.validatePassword(password));
     },
   );
@@ -181,7 +183,7 @@ void main() {
       await tester.pump();
 
       final emailTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Email'),
+        of: find.bySemanticsLabel(R.strings.email),
         matching: find.byType(Text),
       );
 
@@ -202,7 +204,7 @@ void main() {
       await tester.pump();
 
       final emailTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Email'),
+        of: find.bySemanticsLabel(R.strings.email),
         matching: find.byType(Text),
       );
 
@@ -219,7 +221,7 @@ void main() {
       await loadPage(tester);
 
       final emailTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Email'),
+        of: find.bySemanticsLabel(R.strings.email),
         matching: find.byType(Text),
       );
 
@@ -266,7 +268,7 @@ void main() {
       await tester.pump();
 
       final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Senha'),
+        of: find.bySemanticsLabel(R.strings.password),
         matching: find.byType(Text),
       );
 
@@ -287,7 +289,7 @@ void main() {
       await tester.pump();
 
       final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Senha'),
+        of: find.bySemanticsLabel(R.strings.password),
         matching: find.byType(Text),
       );
 
@@ -304,7 +306,7 @@ void main() {
       await loadPage(tester);
 
       final passwordTextChildren = find.descendant(
-        of: find.bySemanticsLabel('Senha'),
+        of: find.bySemanticsLabel(R.strings.password),
         matching: find.byType(Text),
       );
 

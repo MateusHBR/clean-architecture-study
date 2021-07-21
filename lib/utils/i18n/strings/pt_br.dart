@@ -34,6 +34,7 @@ class PtBr implements Translations {
       "Algo errado aconteceu. Tente novamente em breve.";
   //V
   //W
+  String get wait => "Aguarde...";
   //X
   //Y
   //Z

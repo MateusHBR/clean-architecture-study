@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/utils/i18n/i18n.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -264,7 +265,7 @@ void main() {
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
     expectLater(
       sut.errorStream,
-      emitsInOrder(['Credenciais inválidas.', null]),
+      emitsInOrder([R.strings.invalidCredentials, null]),
     );
 
     await sut.authenticate();
@@ -283,7 +284,7 @@ void main() {
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
     expectLater(
       sut.errorStream,
-      emitsInOrder(['Algo errado aconteceu. Tente novamente em breve.', null]),
+      emitsInOrder([R.strings.unexpectedErrorTryAgain, null]),
     );
 
     await sut.authenticate();
@@ -316,7 +317,7 @@ void main() {
 
     expectLater(
       sut.errorStream,
-      emitsInOrder(['Algo errado aconteceu. Tente novamente em breve.', null]),
+      emitsInOrder([R.strings.unexpectedErrorTryAgain, null]),
     );
 
     await sut.authenticate();

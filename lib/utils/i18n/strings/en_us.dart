@@ -34,6 +34,7 @@ class EnUs implements Translations {
       "Something wrong happened. Please try again soon.";
   //V
   //W
+  String get wait => "Wait...";
   //X
   //Y
   //Z

@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/utils/i18n/i18n.dart';
 import 'package:faker/faker.dart';
 import 'package:test/test.dart';
 
@@ -31,6 +32,6 @@ void main() {
   test('should return error if email is invalid', () {
     final error = sut.validate(faker.internet.domainName());
 
-    expect(error, 'Email inválido.');
+    expect(error, R.strings.invalidEmail);
   });
 }
