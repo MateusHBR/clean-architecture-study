@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/i18n/i18n.dart';
 import '../../assets/assets.dart';
 import '../../components/components.dart';
-import './login_presenter.dart';
+import 'login_presenter.dart';
 
 class LoginPage extends StatefulWidget {
   final LoginPresenter presenter;
@@ -119,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       children: [
         Text(
-          'Login'.toUpperCase(),
+          R.strings.login.toUpperCase(),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline1,
         ),
@@ -143,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
           TextButton.icon(
             onPressed: () {},
             icon: Icon(Icons.person),
-            label: Text('Criar conta'),
+            label: Text(R.strings.createAccount),
           ),
         ],
       ),
@@ -159,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
 
         return TextFormField(
           decoration: InputDecoration(
-            labelText: 'Email',
+            labelText: R.strings.email,
             icon: Icon(
               Icons.email,
               color: Theme.of(context).primaryColorLight,
@@ -183,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
 
         return TextFormField(
           decoration: InputDecoration(
-            labelText: 'Senha',
+            labelText: R.strings.password,
             icon: Icon(
               Icons.lock,
               color: Theme.of(context).primaryColorLight,
@@ -222,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
             }),
           ),
           child: Text(
-            'Entrar'.toUpperCase(),
+            R.strings.enter.toUpperCase(),
           ),
         );
       },
