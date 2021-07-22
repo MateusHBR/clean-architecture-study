@@ -16,7 +16,7 @@ void main() {
   late RemoteAddAccount sut;
   late HttpClientSpy httpClient;
   late String url;
-  late AuthenticationParams params;
+  late AddAccountParams params;
 
   Map mockValidData() => {
         'accessToken': faker.guid.guid(),
@@ -48,9 +48,13 @@ void main() {
       url: url,
     );
 
-    params = AuthenticationParams(
+    final password = faker.internet.password();
+
+    params = AddAccountParams(
+      name: faker.internet.userName(),
       email: faker.internet.email(),
-      password: faker.internet.password(),
+      password: password,
+      passwordConfirmation: password,
     );
 
     mockHttpData(mockValidData());
@@ -80,5 +84,13 @@ void main() {
         },
       ),
     ).called(1);
+  });
+
+  test('should throw unexpectedError if HttpClient returns 400', () async {
+    mockHttpError(HttpError.badRequest);
+
+    final future = sut.call(params);
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }

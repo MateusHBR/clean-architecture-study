@@ -7,16 +7,16 @@
 4. Sistema entrega os dados da conta do usuário
 
 > ## Exceção - URL inválida
-1. Sisitema retorna uma mensagem de erro inesperado
+1. Sistema retorna uma mensagem de erro inesperado
 
 > ## Exceção - Dados inválidos
-1. Sisitema retorna uma mensagem de erro inesperado
+1. ✅ Sistema retorna uma mensagem de erro inesperado
 
 > ## Exceção - Reposta inválida
-1. Sisitema retorna uma mensagem de erro inesperado
+1. Sistema retorna uma mensagem de erro inesperado
 
 > ## Exceção - Falha no servidor
-1. Sisitema retorna uma mensagem de erro inesperado
+1. Sistema retorna uma mensagem de erro inesperado
 
 > ## Exceção - Email em uso
-1. Sisitema retorna uma mensagem de erro informando que o email já está em uso
+1. Sistema retorna uma mensagem de erro informando que o email já está em uso

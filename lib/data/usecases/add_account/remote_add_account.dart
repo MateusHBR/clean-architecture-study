@@ -19,20 +19,18 @@ class RemoteAddAccount implements AddAccount {
   Future<AccountEntity> call(AddAccountParams params) async {
     final body = RemoteAddAccountParams.fromDomain(params).toJson();
 
-    // try {
-    final httpResponse = await httpClient.request(
-      url: url,
-      method: 'post',
-      body: body,
-    );
+    try {
+      final httpResponse = await httpClient.request(
+        url: url,
+        method: 'post',
+        body: body,
+      );
 
-    //   return RemoteAccountModel.fromJson(httpResponse).toEntity();
-    // } on HttpError catch (error) {
-    //   throw error == HttpError.unauthorized
-    //       ? DomainError.invalidCredentials
-    //       : DomainError.unexpected;
-    // }
-    return AccountEntity(token: 'token');
+      return AccountEntity(token: 'token');
+      // return RemoteAccountModel.fromJson(httpResponse).toEntity();
+    } on HttpError catch (error) {
+      throw DomainError.unexpected;
+    }
   }
 }
 
