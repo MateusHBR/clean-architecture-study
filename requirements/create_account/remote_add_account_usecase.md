@@ -13,7 +13,7 @@
 1. ✅ Sistema retorna uma mensagem de erro inesperado
 
 > ## Exceção - Reposta inválida
-1. Sistema retorna uma mensagem de erro inesperado
+1. ✅ Sistema retorna uma mensagem de erro inesperado
 
 > ## Exceção - Falha no servidor
 1. ✅ Sistema retorna uma mensagem de erro inesperado
