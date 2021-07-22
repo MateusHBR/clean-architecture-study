@@ -8,6 +8,7 @@ class PtBr implements Translations {
   //D
   //E
   String get email => "Email";
+  String get emailInUse => "Email utilizado por outro usuário.";
   String get enter => "Entrar";
   //F
   //G

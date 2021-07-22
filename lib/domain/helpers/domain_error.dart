@@ -3,6 +3,7 @@ import '../../utils/i18n/i18n.dart';
 enum DomainError {
   unexpected,
   invalidCredentials,
+  emailInUse,
 }
 
 extension DomainErrorExtension on DomainError {
@@ -13,6 +14,9 @@ extension DomainErrorExtension on DomainError {
 
       case DomainError.unexpected:
         return R.strings.unexpectedErrorTryAgain;
+
+      case DomainError.emailInUse:
+        return R.strings.emailInUse;
 
       default:
         return '';

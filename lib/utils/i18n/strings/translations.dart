@@ -6,6 +6,7 @@ abstract class Translations {
   //D
   //E
   String get email;
+  String get emailInUse;
   String get enter;
   //F
   //G

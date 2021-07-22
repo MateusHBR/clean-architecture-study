@@ -8,6 +8,7 @@ class EnUs implements Translations {
   //D
   //E
   String get email => "Email";
+  String get emailInUse => "Email already in use.";
   String get enter => "Enter";
   //F
   //G

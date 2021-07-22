@@ -29,7 +29,9 @@ class RemoteAddAccount implements AddAccount {
       return AccountEntity(token: 'token');
       // return RemoteAccountModel.fromJson(httpResponse).toEntity();
     } on HttpError catch (error) {
-      throw DomainError.unexpected;
+      throw error == HttpError.forbidden
+          ? DomainError.emailInUse
+          : DomainError.unexpected;
     }
   }
 }
