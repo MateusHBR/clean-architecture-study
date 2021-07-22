@@ -26,8 +26,7 @@ class RemoteAddAccount implements AddAccount {
         body: body,
       );
 
-      return AccountEntity(token: 'token');
-      // return RemoteAccountModel.fromJson(httpResponse).toEntity();
+      return RemoteAccountModel.fromJson(httpResponse).toEntity();
     } on HttpError catch (error) {
       throw error == HttpError.forbidden
           ? DomainError.emailInUse

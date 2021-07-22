@@ -118,4 +118,14 @@ void main() {
 
     expect(future, throwsA(DomainError.emailInUse));
   });
+
+  test('should return an Account if HttpClient returns 200', () async {
+    final validData = mockValidData();
+
+    mockHttpData(validData);
+
+    final account = await sut.call(params);
+
+    expect(account.token, validData['accessToken']);
+  });
 }
