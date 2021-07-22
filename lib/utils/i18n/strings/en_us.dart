@@ -22,9 +22,11 @@ class EnUs implements Translations {
   String get login => "Login";
   //M
   //N
+  String get name => "Name";
   //O
   //P
   String get password => "Password";
+  String get passwordConfirmation => "Password confirmation";
   //Q
   //R
   String get requiredField => "Required field.";

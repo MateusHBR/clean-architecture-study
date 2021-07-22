@@ -22,9 +22,11 @@ class PtBr implements Translations {
   String get login => "Login";
   //M
   //N
+  String get name => "Nome";
   //O
   //P
   String get password => "Senha";
+  String get passwordConfirmation => "Confirmação de senha";
   //Q
   //R
   String get requiredField => "Campo obrigatório.";

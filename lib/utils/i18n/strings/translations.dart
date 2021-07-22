@@ -20,9 +20,11 @@ abstract class Translations {
   String get login;
   //M
   //N
+  String get name;
   //O
   //P
   String get password;
+  String get passwordConfirmation;
   //Q
   //R
   String get requiredField;
