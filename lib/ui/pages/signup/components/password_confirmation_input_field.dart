@@ -10,7 +10,7 @@ class PasswordConfirmationInputField extends StatelessWidget {
     final presenter = Provider.of<SignUpPresenter>(context);
 
     return StreamBuilder<String?>(
-      stream: presenter.emailErrorStream,
+      stream: presenter.passwordConfirmationErrorStream,
       builder: (context, snapshot) {
         final errorMessage = snapshot.data;
 

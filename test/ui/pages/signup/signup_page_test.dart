@@ -157,4 +157,48 @@ void main() {
       verify(() => presenter.validatePasswordConfirmation(password));
     },
   );
+
+  testWidgets(
+    'should present error if email is invalid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      emailErrorController.add('any error');
+
+      await tester.pump();
+
+      expect(find.text('any error'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'should present no error if email is valid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      emailErrorController.add(null);
+
+      await tester.pump();
+
+      final emailTextChildren = find.descendant(
+        of: find.bySemanticsLabel(R.strings.email),
+        matching: find.byType(Text),
+      );
+
+      expect(
+        emailTextChildren,
+        findsOneWidget,
+      );
+
+      await loadPage(tester);
+
+      emailErrorController.add('');
+
+      await tester.pump();
+
+      expect(
+        emailTextChildren,
+        findsOneWidget,
+      );
+    },
+  );
 }
