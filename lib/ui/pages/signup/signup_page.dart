@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/i18n/i18n.dart';
 import '../../assets/assets.dart';
 import 'components/components.dart';
+import 'signup_presenter.dart';
 
-class SignUpPage extends StatefulWidget {
-  @override
-  _SignUpPageState createState() => _SignUpPageState();
-}
+class SignUpPage extends StatelessWidget {
+  final SignUpPresenter presenter;
 
-class _SignUpPageState extends State<SignUpPage> {
-  void _hideKeyboard() {
+  const SignUpPage({
+    Key? key,
+    required this.presenter,
+  }) : super(key: key);
+
+  void _hideKeyboard(BuildContext context) {
     final currentFocus = FocusScope.of(context);
 
     if (!currentFocus.hasPrimaryFocus) {
@@ -22,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onTap: _hideKeyboard,
+        onTap: () => _hideKeyboard(context),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,24 +88,27 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _form(context) {
-    return Form(
-      child: Column(
-        children: [
-          const NameInputField(),
-          const SizedBox(height: 8),
-          const EmailInputField(),
-          const SizedBox(height: 8),
-          const PasswordInputField(),
-          const SizedBox(height: 32),
-          const PasswordConfirmationInputField(),
-          const SizedBox(height: 32),
-          const SignUpButton(),
-          TextButton.icon(
-            onPressed: () {},
-            icon: Icon(Icons.exit_to_app),
-            label: Text(R.strings.login),
-          ),
-        ],
+    return Provider(
+      create: (_) => presenter,
+      child: Form(
+        child: Column(
+          children: [
+            NameInputField(),
+            const SizedBox(height: 8),
+            EmailInputField(),
+            const SizedBox(height: 8),
+            PasswordInputField(),
+            const SizedBox(height: 32),
+            PasswordConfirmationInputField(),
+            const SizedBox(height: 32),
+            const SignUpButton(),
+            TextButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.exit_to_app),
+              label: Text(R.strings.login),
+            ),
+          ],
+        ),
       ),
     );
   }

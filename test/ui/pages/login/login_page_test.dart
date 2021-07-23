@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:course_clean_arch/utils/i18n/i18n.dart';
-import 'package:faker/faker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:course_clean_arch/ui/pages/pages.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:faker/faker.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+
+import 'package:course_clean_arch/utils/i18n/i18n.dart';
+import 'package:course_clean_arch/ui/pages/pages.dart';
 
 class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
