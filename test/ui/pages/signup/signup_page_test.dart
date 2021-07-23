@@ -201,4 +201,48 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'should present error if name is invalid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      nameErrorController.add('any error');
+
+      await tester.pump();
+
+      expect(find.text('any error'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'should present no error if name is valid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      nameErrorController.add(null);
+
+      await tester.pump();
+
+      final nameTextChildren = find.descendant(
+        of: find.bySemanticsLabel(R.strings.name),
+        matching: find.byType(Text),
+      );
+
+      expect(
+        nameTextChildren,
+        findsOneWidget,
+      );
+
+      await loadPage(tester);
+
+      nameErrorController.add('');
+
+      await tester.pump();
+
+      expect(
+        nameTextChildren,
+        findsOneWidget,
+      );
+    },
+  );
 }
