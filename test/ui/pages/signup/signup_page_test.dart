@@ -245,4 +245,48 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'should present error if password is invalid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController.add('any error');
+
+      await tester.pump();
+
+      expect(find.text('any error'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'should present no error if password is valid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController.add(null);
+
+      await tester.pump();
+
+      final passwordTextChildren = find.descendant(
+        of: find.bySemanticsLabel(R.strings.password),
+        matching: find.byType(Text),
+      );
+
+      expect(
+        passwordTextChildren,
+        findsOneWidget,
+      );
+
+      await loadPage(tester);
+
+      passwordErrorController.add('');
+
+      await tester.pump();
+
+      expect(
+        passwordTextChildren,
+        findsOneWidget,
+      );
+    },
+  );
 }
