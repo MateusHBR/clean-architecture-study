@@ -289,4 +289,48 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'should present error if passwordConfirmation is invalid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordConfirmationErrorController.add('any error');
+
+      await tester.pump();
+
+      expect(find.text('any error'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'should present no error if passwordConfirmation is valid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordConfirmationErrorController.add(null);
+
+      await tester.pump();
+
+      final passwordConfirmationTextChildren = find.descendant(
+        of: find.bySemanticsLabel(R.strings.passwordConfirmation),
+        matching: find.byType(Text),
+      );
+
+      expect(
+        passwordConfirmationTextChildren,
+        findsOneWidget,
+      );
+
+      await loadPage(tester);
+
+      passwordConfirmationErrorController.add('');
+
+      await tester.pump();
+
+      expect(
+        passwordConfirmationTextChildren,
+        findsOneWidget,
+      );
+    },
+  );
 }
