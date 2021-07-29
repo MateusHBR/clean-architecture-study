@@ -368,11 +368,11 @@ void main() {
       ).thenAnswer(
         (_) async {},
       );
-
+      final signinButton = find.byType(ElevatedButton);
       isFormValidController.add(true);
       await tester.pump();
-
-      await tester.tap(find.byType(ElevatedButton));
+      await tester.ensureVisible(signinButton);
+      await tester.tap(signinButton);
       await tester.pump();
 
       verify(() => presenter.authenticate()).called(1);
