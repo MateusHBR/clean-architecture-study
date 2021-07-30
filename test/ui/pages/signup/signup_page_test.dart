@@ -10,6 +10,8 @@ import 'package:course_clean_arch/ui/pages/pages.dart';
 
 class SignUpPresenterSpy extends Mock implements SignUpPresenter {}
 
+class NavigatorObserverSpy extends Mock implements NavigatorObserver {}
+
 void main() {
   late SignUpPresenter presenter;
   late StreamController<String?> nameErrorController;
@@ -19,6 +21,8 @@ void main() {
   late StreamController<bool> isFormValidController;
   late StreamController<bool> isLoadingController;
   late StreamController<String?> mainErrorController;
+  late StreamController<String?> pushNamedAndRemoveUntilController;
+  late NavigatorObserverSpy navigatorObserver;
 
   void initializeStreams() {
     isFormValidController = StreamController<bool>.broadcast();
@@ -28,6 +32,7 @@ void main() {
     passwordErrorController = StreamController<String?>.broadcast();
     passwordConfirmationErrorController = StreamController<String?>.broadcast();
     mainErrorController = StreamController<String?>.broadcast();
+    pushNamedAndRemoveUntilController = StreamController<String?>.broadcast();
   }
 
   void mockStreams() {
@@ -71,6 +76,11 @@ void main() {
     ).thenAnswer(
       (_) => mainErrorController.stream,
     );
+    when(
+      () => presenter.pushNamedAndRemoveUntilStream,
+    ).thenAnswer(
+      (_) => pushNamedAndRemoveUntilController.stream,
+    );
   }
 
   void closeStreams() {
@@ -81,18 +91,22 @@ void main() {
     isFormValidController.close();
     isLoadingController.close();
     mainErrorController.close();
+    pushNamedAndRemoveUntilController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = SignUpPresenterSpy();
+    navigatorObserver = NavigatorObserverSpy();
 
     initializeStreams();
     mockStreams();
 
     final signUpPage = MaterialApp(
       initialRoute: '/signup',
+      navigatorObservers: [navigatorObserver],
       routes: {
         '/signup': (context) => SignUpPage(presenter: presenter),
+        '/surveys': (context) => Scaffold(body: Text('Enquetes')),
       },
     );
 
@@ -458,6 +472,27 @@ void main() {
       addTearDown(() {
         verify(presenter.dispose).called(1);
       });
+    },
+  );
+
+  testWidgets(
+    'should change page',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+      final newPage = '/surveys';
+
+      when(
+        () => navigatorObserver.navigator!.pushNamedAndRemoveUntil(
+          newPage,
+          (route) => false,
+        ),
+      ).thenAnswer((_) async => {});
+
+      pushNamedAndRemoveUntilController.add(newPage);
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Enquetes'), findsOneWidget);
     },
   );
 }

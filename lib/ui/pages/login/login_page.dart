@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../utils/i18n/i18n.dart';
 import '../../assets/assets.dart';
 import '../../components/components.dart';
+import '../../mixings/mixings.dart';
 import 'login_presenter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,7 +18,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState(presenter);
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with NavigationMixing {
   final LoginPresenter presenter;
 
   _LoginPageState(this.presenter);
@@ -43,14 +44,10 @@ class _LoginPageState extends State<LoginPage> {
       showErrorMessage(context, error);
     });
 
-    presenter.pushNamedAndRemoveUntilStream.listen((page) {
-      if (page?.isNotEmpty ?? false) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          page!,
-          (route) => false,
-        );
-      }
-    });
+    pushNamedAndRemoveUntil(
+      navigationStream: presenter.pushNamedAndRemoveUntilStream,
+      context: context,
+    );
   }
 
   @override

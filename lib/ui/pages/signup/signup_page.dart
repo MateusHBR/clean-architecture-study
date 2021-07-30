@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../utils/i18n/i18n.dart';
 import '../../assets/assets.dart';
 import '../../components/components.dart';
+import '../../mixings/mixings.dart';
 import 'components/components.dart';
 import 'signup_presenter.dart';
 
@@ -19,7 +20,7 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState(presenter);
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends State<SignUpPage> with NavigationMixing {
   final SignUpPresenter presenter;
 
   _SignUpPageState(this.presenter);
@@ -43,6 +44,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
       showErrorMessage(context, error);
     });
+
+    pushNamedAndRemoveUntil(
+      navigationStream: presenter.pushNamedAndRemoveUntilStream,
+      context: context,
+    );
   }
 
   @override
