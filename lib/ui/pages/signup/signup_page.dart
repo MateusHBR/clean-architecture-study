@@ -7,7 +7,7 @@ import '../../components/components.dart';
 import 'components/components.dart';
 import 'signup_presenter.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   final SignUpPresenter presenter;
 
   const SignUpPage({
@@ -15,16 +15,19 @@ class SignUpPage extends StatelessWidget {
     required this.presenter,
   }) : super(key: key);
 
-  void _hideKeyboard(BuildContext context) {
-    final currentFocus = FocusScope.of(context);
+  @override
+  _SignUpPageState createState() => _SignUpPageState(presenter);
+}
 
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
-  }
+class _SignUpPageState extends State<SignUpPage> {
+  final SignUpPresenter presenter;
+
+  _SignUpPageState(this.presenter);
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+
     presenter.isLoadingStream.listen((isLoading) {
       if (isLoading) {
         showLoading(context);
@@ -40,7 +43,24 @@ class SignUpPage extends StatelessWidget {
 
       showErrorMessage(context, error);
     });
+  }
 
+  @override
+  void dispose() {
+    presenter.dispose();
+    super.dispose();
+  }
+
+  void _hideKeyboard(BuildContext context) {
+    final currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
         onTap: () => _hideKeyboard(context),
