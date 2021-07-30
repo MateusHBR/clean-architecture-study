@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/i18n/i18n.dart';
 import '../../assets/assets.dart';
+import '../../components/components.dart';
 import 'components/components.dart';
 import 'signup_presenter.dart';
 
@@ -24,6 +25,14 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    presenter.isLoadingStream.listen((isLoading) {
+      if (isLoading) {
+        showLoading(context);
+      } else {
+        hideLoading(context);
+      }
+    });
+
     return Scaffold(
       body: GestureDetector(
         onTap: () => _hideKeyboard(context),
