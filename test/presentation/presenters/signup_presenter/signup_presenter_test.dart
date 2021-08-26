@@ -22,6 +22,7 @@ void main() {
   late String email;
   late String name;
   late String password;
+  late String passwordConfirmation;
 
   ValidationExpectation mockValidationCall({String? field}) => when(
         () => validation.validate(
@@ -42,6 +43,7 @@ void main() {
     email = faker.internet.email();
     name = faker.internet.userName();
     password = faker.internet.password();
+    passwordConfirmation = password;
 
     mockValidation();
   });
@@ -167,5 +169,46 @@ void main() {
 
     sut.validatePassword(password);
     sut.validatePassword(password);
+  });
+
+  test('should call validation with correct passwordConfirmation', () {
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    verify(
+      () => validation.validate(
+        value: passwordConfirmation,
+        field: 'passwordConfirmation',
+      ),
+    ).called(1);
+  });
+
+  test('should emit passwordConfirmation error if validation fails', () {
+    mockValidation(value: 'error');
+
+    sut.passwordConfirmationErrorStream.listen(
+      expectAsync1((error) => expect(error, 'error')),
+    );
+
+    sut.isFormValidStream.listen(
+      expectAsync1((isValid) => expect(isValid, false)),
+    );
+
+    sut.validatePasswordConfirmation(passwordConfirmation);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+  });
+
+  test(
+      'should emit null if validation passwordConfirmation succeeds and prevents duplicated events',
+      () {
+    sut.passwordConfirmationErrorStream.listen(
+      expectAsync1((error) => expect(error, null)),
+    );
+
+    sut.isFormValidStream.listen(
+      expectAsync1((isValid) => expect(isValid, false)),
+    );
+
+    sut.validatePasswordConfirmation(passwordConfirmation);
+    sut.validatePasswordConfirmation(passwordConfirmation);
   });
 }
