@@ -16,6 +16,7 @@ class EnUs implements Translations {
   //I
   String get invalidCredentials => "Invalid credentials.";
   String get invalidEmail => "Invalid email.";
+  String get invalidField => "Invalid field.";
   //J
   //K
   //L

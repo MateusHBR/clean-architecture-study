@@ -16,6 +16,7 @@ class PtBr implements Translations {
   //I
   String get invalidCredentials => "Credenciais inválidas.";
   String get invalidEmail => "Email inválido.";
+  String get invalidField => "Campo inválido.";
   //J
   //K
   //L

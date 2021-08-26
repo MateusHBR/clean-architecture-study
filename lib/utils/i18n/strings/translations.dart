@@ -14,6 +14,7 @@ abstract class Translations {
   //I
   String get invalidCredentials;
   String get invalidEmail;
+  String get invalidField;
   //J
   //K
   //L
