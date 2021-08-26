@@ -14,4 +14,13 @@ void main() {
       R.strings.invalidField,
     );
   });
+
+  test('should return error if values are different', () {
+    final sut = CompareFieldValidation(
+      field: 'any_field',
+      valueToCompare: 'wrong value',
+    );
+
+    expect(sut.validate('wrong value'), null);
+  });
 }

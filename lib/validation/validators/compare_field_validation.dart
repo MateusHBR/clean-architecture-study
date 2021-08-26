@@ -6,7 +6,7 @@ import 'package:course_clean_arch/validation/protocols/protocols.dart';
 
 class CompareFieldValidation extends Equatable implements FieldValidation {
   final String field;
-  final String valueToCompare;
+  final String? valueToCompare;
 
   CompareFieldValidation({
     required this.field,
@@ -21,6 +21,14 @@ class CompareFieldValidation extends Equatable implements FieldValidation {
 
   @override
   String? validate(String? value) {
+    if (value == null || valueToCompare == null) {
+      return R.strings.invalidField;
+    }
+
+    if (value.compareTo(valueToCompare!) == 0) {
+      return null;
+    }
+
     return R.strings.invalidField;
   }
 }
