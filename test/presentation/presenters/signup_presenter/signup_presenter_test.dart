@@ -20,6 +20,7 @@ void main() {
   late GetxSignupPresenter sut;
   late ValidationSpy validation;
   late String email;
+  late String name;
 
   ValidationExpectation mockValidationCall({String? field}) => when(
         () => validation.validate(
@@ -38,6 +39,7 @@ void main() {
       validation: validation,
     );
     email = faker.internet.email();
+    name = faker.internet.userName();
 
     mockValidation();
   });
@@ -81,5 +83,46 @@ void main() {
 
     sut.validateEmail(email);
     sut.validateEmail(email);
+  });
+
+  test('should call validation with correct name', () {
+    sut.validateName(name);
+
+    verify(
+      () => validation.validate(
+        value: name,
+        field: 'name',
+      ),
+    ).called(1);
+  });
+
+  test('should emit name error if validation fails', () {
+    mockValidation(value: 'error');
+
+    sut.nameErrorStream.listen(
+      expectAsync1((error) => expect(error, 'error')),
+    );
+
+    sut.isFormValidStream.listen(
+      expectAsync1((isValid) => expect(isValid, false)),
+    );
+
+    sut.validateName(name);
+    sut.validateName(name);
+  });
+
+  test(
+      'should emit null if validation name succeeds and prevents duplicated events',
+      () {
+    sut.nameErrorStream.listen(
+      expectAsync1((error) => expect(error, null)),
+    );
+
+    sut.isFormValidStream.listen(
+      expectAsync1((isValid) => expect(isValid, false)),
+    );
+
+    sut.validateName(name);
+    sut.validateName(name);
   });
 }
