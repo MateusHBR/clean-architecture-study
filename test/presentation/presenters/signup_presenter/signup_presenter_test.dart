@@ -21,6 +21,7 @@ void main() {
   late ValidationSpy validation;
   late String email;
   late String name;
+  late String password;
 
   ValidationExpectation mockValidationCall({String? field}) => when(
         () => validation.validate(
@@ -40,6 +41,7 @@ void main() {
     );
     email = faker.internet.email();
     name = faker.internet.userName();
+    password = faker.internet.password();
 
     mockValidation();
   });
@@ -124,5 +126,46 @@ void main() {
 
     sut.validateName(name);
     sut.validateName(name);
+  });
+
+  test('should call validation with correct password', () {
+    sut.validatePassword(password);
+
+    verify(
+      () => validation.validate(
+        value: password,
+        field: 'password',
+      ),
+    ).called(1);
+  });
+
+  test('should emit password error if validation fails', () {
+    mockValidation(value: 'error');
+
+    sut.passwordErrorStream.listen(
+      expectAsync1((error) => expect(error, 'error')),
+    );
+
+    sut.isFormValidStream.listen(
+      expectAsync1((isValid) => expect(isValid, false)),
+    );
+
+    sut.validatePassword(password);
+    sut.validatePassword(password);
+  });
+
+  test(
+      'should emit null if validation password succeeds and prevents duplicated events',
+      () {
+    sut.passwordErrorStream.listen(
+      expectAsync1((error) => expect(error, null)),
+    );
+
+    sut.isFormValidStream.listen(
+      expectAsync1((isValid) => expect(isValid, false)),
+    );
+
+    sut.validatePassword(password);
+    sut.validatePassword(password);
   });
 }

@@ -21,6 +21,7 @@ class GetxSignupPresenter extends GetxController {
   String _password = '';
   final _emailErrorObserver = Rx<String?>(null);
   final _nameErrorObserver = Rx<String?>(null);
+  final _passwordErrorObserver = Rx<String?>(null);
   final _errorObserver = Rx<String?>(null);
   final _formValidObserver = Rx<bool>(false);
   final _loadingObserver = Rx<bool>(false);
@@ -31,6 +32,10 @@ class GetxSignupPresenter extends GetxController {
 
   @override
   Stream<String?> get nameErrorStream => _nameErrorObserver.stream.distinct();
+
+  @override
+  Stream<String?> get passwordErrorStream =>
+      _passwordErrorObserver.stream.distinct();
 
   @override
   Stream<bool> get isFormValidStream =>
@@ -72,6 +77,17 @@ class GetxSignupPresenter extends GetxController {
     _nameErrorObserver.value = validation.validate(
       field: 'name',
       value: name,
+    );
+
+    _validateForm();
+  }
+
+  void validatePassword(String password) {
+    _password = password;
+
+    _passwordErrorObserver.value = validation.validate(
+      field: 'password',
+      value: password,
     );
 
     _validateForm();
