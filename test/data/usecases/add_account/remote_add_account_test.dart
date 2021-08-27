@@ -8,7 +8,7 @@ import 'package:course_clean_arch/domain/usecases/usecases.dart';
 import 'package:course_clean_arch/data/http/http.dart';
 import 'package:course_clean_arch/data/usecases/usecases.dart';
 
-class HttpClientSpy extends Mock implements HttpClient {}
+class HttpClientSpy extends Mock implements HttpClient<Map> {}
 
 typedef MockRequestReturn = When<Future<Map>>;
 
