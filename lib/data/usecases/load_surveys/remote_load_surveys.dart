@@ -33,8 +33,10 @@ class RemoteLoadSurveys implements LoadSurveys {
             (model) => model.toEntity(),
           )
           .toList();
-    } on HttpError {
-      throw DomainError.unexpected;
+    } on HttpError catch (error) {
+      throw error == HttpError.forbidden
+          ? DomainError.accessDenied
+          : DomainError.unexpected;
     }
   }
 }

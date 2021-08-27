@@ -60,7 +60,7 @@ void main() {
   });
 
   test('should call http client with correct values', () async {
-    mockHttpData([{}]);
+    mockHttpData(mockValidData());
 
     await sut();
 
@@ -114,5 +114,13 @@ void main() {
     final future = sut();
 
     expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('should throw AccessDeniedError if HttpClient returns 403', () async {
+    mockHttpError(HttpError.forbidden);
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.accessDenied));
   });
 }

@@ -4,6 +4,7 @@ enum DomainError {
   unexpected,
   invalidCredentials,
   emailInUse,
+  accessDenied,
 }
 
 extension DomainErrorExtension on DomainError {
