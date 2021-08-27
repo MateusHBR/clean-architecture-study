@@ -16,12 +16,12 @@ class RemoteLoadSurveys implements LoadSurveys {
 
   @override
   Future<List<SurveyEntity>> call() async {
-    final httpResponse = await httpClient.request(
-      url: url,
-      method: 'get',
-    );
-
     try {
+      final httpResponse = await httpClient.request(
+        url: url,
+        method: 'get',
+      );
+
       final convertedData = httpResponse
           .map(
             (json) => RemoteSurveysModel.fromJson(json),
