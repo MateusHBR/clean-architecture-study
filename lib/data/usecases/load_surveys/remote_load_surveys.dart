@@ -1,8 +1,8 @@
-import 'package:course_clean_arch/data/http/http.dart';
-import 'package:course_clean_arch/data/models/models.dart';
-import 'package:course_clean_arch/domain/entities/survey_entity.dart';
-import 'package:course_clean_arch/domain/helpers/helpers.dart';
+import '../../../data/http/http.dart';
+import '../../../data/models/models.dart';
 
+import '../../../domain/entities/survey_entity.dart';
+import '../../../domain/helpers/helpers.dart';
 import '../../../domain/usecases/usecases.dart';
 
 class RemoteLoadSurveys implements LoadSurveys {
