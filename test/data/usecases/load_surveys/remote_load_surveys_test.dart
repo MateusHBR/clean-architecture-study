@@ -1,4 +1,5 @@
 import 'package:course_clean_arch/data/models/models.dart';
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -85,5 +86,17 @@ void main() {
     final response = await sut();
 
     expect(convertedData, response);
+  });
+
+  test(
+      'should throw unexpectedError if HttpClient returns 200 with invalid data',
+      () async {
+    mockHttpData([
+      {'invalid_key': 'invalidValue'}
+    ]);
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }

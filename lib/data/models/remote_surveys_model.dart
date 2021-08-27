@@ -1,4 +1,6 @@
-import 'package:course_clean_arch/domain/entities/entities.dart';
+import '../../domain/entities/entities.dart';
+
+import '../http/http.dart';
 
 class RemoteSurveysModel {
   final String id;
@@ -22,14 +24,20 @@ class RemoteSurveysModel {
     };
   }
 
-  factory RemoteSurveysModel.fromJson(Map<dynamic, dynamic> map) {
+  factory RemoteSurveysModel.fromJson(Map<dynamic, dynamic> json) {
+    if (!json.keys.toSet().containsAll(
+      ['id', 'question', 'date', 'didAnswered'],
+    )) {
+      throw HttpError.invalidData;
+    }
+
     return RemoteSurveysModel(
-      id: map['id'] ?? '',
-      question: map['question'] ?? '',
+      id: json['id'] ?? '',
+      question: json['question'] ?? '',
       date: DateTime.parse(
-        map['date'] ?? DateTime.now().toIso8601String(),
+        json['date'] ?? DateTime.now().toIso8601String(),
       ),
-      didAnswered: map['didAnswered'] ?? false,
+      didAnswered: json['didAnswered'] ?? false,
     );
   }
 
