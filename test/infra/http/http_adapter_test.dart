@@ -253,35 +253,21 @@ void main() {
       ).called(1);
     });
 
-    test('should call post without body', () async {
-      await sut.request(
-        url: url,
-        method: 'post',
-      );
-
-      verify(
-        () => client.post(
-          Uri.parse(url),
-          headers: any(named: 'headers'),
-        ),
-      ).called(1);
-    });
-
-    test('should return data if post returns 200', () async {
+    test('should return data if get returns 200', () async {
       final response = await sut.request(
         url: url,
-        method: 'post',
+        method: 'get',
       );
 
       expect(response, {'any_key': 'any_value'});
     });
 
-    test('should return empty map if post returns 200 with no data', () async {
+    test('should return empty map if get returns 200 with no data', () async {
       mockResponse(statusCode: 200, body: '');
 
       final response = await sut.request(
         url: url,
-        method: 'post',
+        method: 'get',
       );
 
       expect(response, {});
