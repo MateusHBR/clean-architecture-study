@@ -4,12 +4,14 @@ abstract class AppTheme {
   static const _primaryColor = Color.fromRGBO(136, 14, 79, 1);
   static const _primaryColorDark = Color.fromRGBO(96, 0, 39, 1);
   static const _primaryColorLight = Color.fromRGBO(188, 71, 123, 1);
+  static const _secondaryColorDark = Color.fromRGBO(0, 37, 26, 1);
 
   static ThemeData get theme {
     return ThemeData(
       primaryColor: _primaryColor,
       primaryColorDark: _primaryColorDark,
       primaryColorLight: _primaryColorLight,
+      secondaryHeaderColor: _secondaryColorDark,
       accentColor: _primaryColor,
       backgroundColor: Colors.white,
       textTheme: _textTheme,

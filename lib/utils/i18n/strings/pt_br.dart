@@ -32,6 +32,7 @@ class PtBr implements Translations {
   //R
   String get requiredField => "Campo obrigatório.";
   //S
+  String get surveys => "Enquetes";
   //T
   //U
   String get unexpectedErrorTryAgain =>

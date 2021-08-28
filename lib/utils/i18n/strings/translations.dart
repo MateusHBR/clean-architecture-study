@@ -30,6 +30,7 @@ abstract class Translations {
   //R
   String get requiredField;
   //S
+  String get surveys;
   //T
   //U
   String get unexpectedErrorTryAgain;

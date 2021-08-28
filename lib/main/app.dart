@@ -15,7 +15,7 @@ class App extends StatelessWidget {
       routes: {
         '/': (context) => makeSplashPage(),
         '/login': (context) => makeLoginPage(),
-        '/surveys': (context) => Scaffold(body: Text('Enquetes')),
+        '/surveys': (context) => makeSurveysPage(),
       },
     );
   }
