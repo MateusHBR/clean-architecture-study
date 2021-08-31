@@ -20,7 +20,7 @@ extension DomainErrorExtension on DomainError {
         return R.strings.emailInUse;
 
       default:
-        return '';
+        return R.strings.unexpectedErrorTryAgain;
     }
   }
 }

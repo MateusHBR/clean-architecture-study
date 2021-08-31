@@ -5,6 +5,7 @@ import '../../../domain/helpers/helpers.dart';
 import '../../../ui/components/components.dart';
 import '../../../utils/i18n/i18n.dart';
 import './widgets/widgets.dart';
+import 'states/surveys_state.dart';
 import 'survey_view_model.dart';
 import 'surveys_presenter.dart';
 
@@ -47,29 +48,40 @@ class _SurveysPageState extends State<SurveysPage> {
             }
           });
 
-          return StreamBuilder<List<SurveyViewModel>>(
+          return StreamBuilder<SurveysState>(
             stream: presenter.surveysStream,
+            initialData: SurveysInitialState(),
             builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                final errorMessage = snapshot.error as DomainError;
+              final data = snapshot.data!;
 
-                return Column(
-                  children: [
-                    Text(errorMessage.description),
-                    TextButton.icon(
-                      onPressed: () {
-                        presenter.loadData();
-                      },
-                      icon: Icon(Icons.refresh),
-                      label: Text(R.strings.reload),
-                    ),
-                  ],
+              if (data is SurveysErrorState) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        data.errorMessage,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextButton.icon(
+                        onPressed: () {
+                          presenter.loadData();
+                        },
+                        icon: Icon(Icons.refresh),
+                        label: Text(R.strings.reload),
+                      ),
+                    ],
+                  ),
                 );
               }
 
-              if (snapshot.hasData) {
-                final data = snapshot.data!;
-
+              if (data is SurveysSuccessState) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: CarouselSlider(
@@ -77,7 +89,7 @@ class _SurveysPageState extends State<SurveysPage> {
                       enlargeCenterPage: true,
                       aspectRatio: 1,
                     ),
-                    items: data.map((survey) {
+                    items: data.surveys.map((survey) {
                       return SurveyItem(
                         item: survey,
                       );

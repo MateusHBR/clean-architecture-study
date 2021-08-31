@@ -13,11 +13,11 @@ class SurveysPresenterSpy extends Mock implements SurveysPresenter {}
 void main() {
   late SurveysPresenterSpy presenter;
   late StreamController<bool> isLoadingController;
-  late StreamController<List<SurveyViewModel>> loadSurveysController;
+  late StreamController<SurveysState> loadSurveysController;
 
   void initializeStreams() {
     isLoadingController = StreamController<bool>();
-    loadSurveysController = StreamController<List<SurveyViewModel>>();
+    loadSurveysController = StreamController<SurveysState>();
   }
 
   void mockStreams() {
@@ -112,8 +112,8 @@ void main() {
   testWidgets('should presents error if surveysStream fails', (tester) async {
     await loadWidget(tester);
 
-    loadSurveysController.addError(
-      DomainError.unexpected,
+    loadSurveysController.add(
+      SurveysErrorState(errorMessage: DomainError.unexpected.description),
     );
     await tester.pump();
 
@@ -130,7 +130,11 @@ void main() {
   testWidgets('should presents list if surveysStream succeeds', (tester) async {
     await loadWidget(tester);
 
-    loadSurveysController.add(makeSurveys());
+    loadSurveysController.add(
+      SurveysSuccessState(
+        surveys: makeSurveys(),
+      ),
+    );
     await tester.pump();
 
     expect(
@@ -146,9 +150,10 @@ void main() {
   testWidgets('should call loadSurveys on reload button click', (tester) async {
     await loadWidget(tester);
 
-    loadSurveysController.addError(
-      DomainError.unexpected,
+    loadSurveysController.add(
+      SurveysErrorState(errorMessage: DomainError.unexpected.description),
     );
+
     await tester.pump();
 
     await tester.tap(find.text(R.strings.reload));
