@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:course_clean_arch/utils/i18n/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -112,12 +113,12 @@ void main() {
     await loadWidget(tester);
 
     loadSurveysController.addError(
-      'Algo errado aconteceu. Tente novamente mais tarde',
+      DomainError.unexpected,
     );
     await tester.pump();
 
     expect(
-      find.text('Algo errado aconteceu. Tente novamente mais tarde'),
+      find.text(DomainError.unexpected.description),
       findsOneWidget,
     );
     expect(
@@ -146,7 +147,7 @@ void main() {
     await loadWidget(tester);
 
     loadSurveysController.addError(
-      'Algo errado aconteceu. Tente novamente mais tarde',
+      DomainError.unexpected,
     );
     await tester.pump();
 

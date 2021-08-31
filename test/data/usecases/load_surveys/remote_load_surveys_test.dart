@@ -8,7 +8,7 @@ import 'package:course_clean_arch/data/usecases/usecases.dart';
 
 import 'package:course_clean_arch/data/http/http.dart';
 
-class HttpClientSpy extends Mock implements HttpClient<List<Map>> {}
+class HttpClientSpy extends Mock implements HttpClient {}
 
 typedef MockRequestReturn = When<Future<List<Map>>>;
 
@@ -21,8 +21,7 @@ void main() {
         () => httpClient.request(
           url: any(named: 'url'),
           method: any(named: 'method'),
-          // body: any(named: 'body'),
-        ),
+        ) as Future<List<Map>>,
       );
 
   void mockHttpData(List<Map> data) {

@@ -1,18 +1,19 @@
-import 'package:course_clean_arch/ui/pages/surveys/survey_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../../../domain/helpers/helpers.dart';
 import '../../../ui/components/components.dart';
 import '../../../utils/i18n/i18n.dart';
 import './widgets/widgets.dart';
+import 'survey_view_model.dart';
 import 'surveys_presenter.dart';
 
 class SurveysPage extends StatefulWidget {
-  final SurveysPresenter? presenter;
+  final SurveysPresenter presenter;
 
   const SurveysPage({
     Key? key,
-    this.presenter,
+    required this.presenter,
   }) : super(key: key);
 
   @override
@@ -20,13 +21,13 @@ class SurveysPage extends StatefulWidget {
 }
 
 class _SurveysPageState extends State<SurveysPage> {
-  final SurveysPresenter? presenter;
+  final SurveysPresenter presenter;
 
   _SurveysPageState(this.presenter);
 
   @override
   void initState() {
-    presenter!.loadData();
+    presenter.loadData();
     super.initState();
   }
 
@@ -38,7 +39,7 @@ class _SurveysPageState extends State<SurveysPage> {
       ),
       body: Builder(
         builder: (context) {
-          presenter!.isLoadingStream.listen((isLoading) {
+          presenter.isLoadingStream.listen((isLoading) {
             if (isLoading) {
               showLoading(context);
             } else {
@@ -47,15 +48,17 @@ class _SurveysPageState extends State<SurveysPage> {
           });
 
           return StreamBuilder<List<SurveyViewModel>>(
-            stream: presenter!.surveysStream,
+            stream: presenter.surveysStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
+                final errorMessage = snapshot.error as DomainError;
+
                 return Column(
                   children: [
-                    Text(snapshot.error.toString()),
+                    Text(errorMessage.description),
                     TextButton.icon(
                       onPressed: () {
-                        presenter!.loadData();
+                        presenter.loadData();
                       },
                       icon: Icon(Icons.refresh),
                       label: Text(R.strings.reload),

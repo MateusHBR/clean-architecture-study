@@ -6,7 +6,7 @@ import '../../../domain/helpers/helpers.dart';
 import '../../../domain/usecases/usecases.dart';
 
 class RemoteLoadSurveys implements LoadSurveys {
-  final HttpClient<List<Map>> httpClient;
+  final HttpClient httpClient;
   final String url;
 
   RemoteLoadSurveys({
@@ -22,15 +22,9 @@ class RemoteLoadSurveys implements LoadSurveys {
         method: 'get',
       );
 
-      final convertedData = httpResponse
-          .map(
-            (json) => RemoteSurveysModel.fromJson(json),
-          )
-          .toList();
-
-      return convertedData
-          .map(
-            (model) => model.toEntity(),
+      return httpResponse
+          .map<SurveyEntity>(
+            (json) => RemoteSurveysModel.fromJson(json).toEntity(),
           )
           .toList();
     } on HttpError catch (error) {
