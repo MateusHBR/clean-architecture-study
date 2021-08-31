@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -15,6 +16,21 @@ void main() {
   late GetxSurveysPresenter sut;
   late LoadSurveys loadSurveysSpy;
 
+  final defaultSurveys = [
+    SurveyEntity(
+      id: '1',
+      date: DateTime(2020, 2, 20),
+      didAnswered: true,
+      question: 'Question1',
+    ),
+    SurveyEntity(
+      id: '2',
+      date: DateTime(2021, 2, 20),
+      didAnswered: false,
+      question: 'Question2',
+    ),
+  ];
+
   setUp(() {
     loadSurveysSpy = LoadSurveysSpy();
 
@@ -27,10 +43,8 @@ void main() {
     return when(() => loadSurveysSpy());
   }
 
-  void mockLoadSurveys() {
-    mockSurveysCall().thenAnswer(
-      (_) async => [],
-    );
+  void mockLoadSurveys({List<SurveyEntity>? data}) {
+    mockSurveysCall().thenAnswer((_) async => data ?? defaultSurveys);
   }
 
   test('should call loadSurveys on loadData', () async {
@@ -39,5 +53,35 @@ void main() {
     await sut.loadData();
 
     verify(() => loadSurveysSpy()).called(1);
+  });
+
+  test('should emit correct events on success', () async {
+    mockLoadSurveys();
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    sut.surveysStream.listen(
+      expectAsync1(
+        (surveys) => expect(
+          surveys,
+          [
+            SurveyViewModel(
+              id: '1',
+              date: '20 Feb 2020',
+              didAnswered: true,
+              question: 'Question1',
+            ),
+            SurveyViewModel(
+              id: '2',
+              date: '20 Feb 2021',
+              didAnswered: false,
+              question: 'Question2',
+            ),
+          ],
+        ),
+      ),
+    );
+
+    await sut.loadData();
   });
 }

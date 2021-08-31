@@ -26,7 +26,7 @@ void main() {
       (invocation) => isLoadingController.stream,
     );
     when(
-      () => presenter.loadSurveysStream,
+      () => presenter.surveysStream,
     ).thenAnswer(
       (invocation) => loadSurveysController.stream,
     );
@@ -108,8 +108,7 @@ void main() {
     );
   });
 
-  testWidgets('should presents error if loadSurveysStream fails',
-      (tester) async {
+  testWidgets('should presents error if surveysStream fails', (tester) async {
     await loadWidget(tester);
 
     loadSurveysController.addError(
@@ -127,8 +126,7 @@ void main() {
     );
   });
 
-  testWidgets('should presents list if loadSurveysStream succeeds',
-      (tester) async {
+  testWidgets('should presents list if surveysStream succeeds', (tester) async {
     await loadWidget(tester);
 
     loadSurveysController.add(makeSurveys());
