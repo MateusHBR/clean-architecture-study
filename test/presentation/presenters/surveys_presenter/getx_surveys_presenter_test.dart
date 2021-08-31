@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:course_clean_arch/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
@@ -47,6 +48,10 @@ void main() {
     mockSurveysCall().thenAnswer((_) async => data ?? defaultSurveys);
   }
 
+  void mockLoadSurveysError(DomainError error) {
+    mockSurveysCall().thenThrow(error);
+  }
+
   test('should call loadSurveys on loadData', () async {
     mockLoadSurveys();
 
@@ -78,6 +83,24 @@ void main() {
               question: 'Question2',
             ),
           ],
+        ),
+      ),
+    );
+
+    await sut.loadData();
+  });
+
+  test('should emit correct events on error', () async {
+    mockLoadSurveysError(DomainError.unexpected);
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    sut.surveysStream.listen(
+      null,
+      onError: expectAsync1(
+        (error) => expect(
+          error,
+          DomainError.unexpected,
         ),
       ),
     );

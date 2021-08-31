@@ -40,7 +40,9 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
             ),
           )
           .toList();
-    } on DomainError catch (error) {} finally {
+    } on DomainError catch (error) {
+      _isSurveysObservable.addError(error);
+    } finally {
       _isLoadingObservable.value = false;
     }
   }
