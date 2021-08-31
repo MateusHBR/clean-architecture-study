@@ -61,13 +61,13 @@ void main() {
         id: '1',
         question: 'Question 1',
         date: 'Date 1',
-        didAnswer: true,
+        didAnswered: true,
       ),
       SurveyViewModel(
         id: '2',
         question: 'Question 2',
         date: 'Date 2',
-        didAnswer: false,
+        didAnswered: false,
       ),
     ];
   }
