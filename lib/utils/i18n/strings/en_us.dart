@@ -31,6 +31,7 @@ class EnUs implements Translations {
   //Q
   //R
   String get requiredField => "Required field.";
+  String get reload => "Reload";
   //S
   String get surveys => "Surveys";
   //T

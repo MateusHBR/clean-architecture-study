@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:course_clean_arch/utils/i18n/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -11,9 +12,11 @@ class SurveysPresenterSpy extends Mock implements SurveysPresenter {}
 void main() {
   late SurveysPresenterSpy presenter;
   late StreamController<bool> isLoadingController;
+  late StreamController<List<SurveyViewModel>> loadSurveysController;
 
   void initializeStreams() {
     isLoadingController = StreamController<bool>();
+    loadSurveysController = StreamController<List<SurveyViewModel>>();
   }
 
   void mockStreams() {
@@ -21,6 +24,11 @@ void main() {
       () => presenter.isLoadingStream,
     ).thenAnswer(
       (invocation) => isLoadingController.stream,
+    );
+    when(
+      () => presenter.loadSurveysStream,
+    ).thenAnswer(
+      (invocation) => loadSurveysController.stream,
     );
   }
 
@@ -48,6 +56,7 @@ void main() {
   }
 
   void closeStreams() {
+    loadSurveysController.close();
     isLoadingController.close();
   }
 
@@ -79,6 +88,25 @@ void main() {
     expect(
       find.byType(CircularProgressIndicator),
       findsNothing,
+    );
+  });
+
+  testWidgets('should presents error if loadSurveysStream fails',
+      (tester) async {
+    await loadWidget(tester);
+
+    loadSurveysController.addError(
+      'Algo errado aconteceu. Tente novamente mais tarde',
+    );
+    await tester.pump();
+
+    expect(
+      find.text('Algo errado aconteceu. Tente novamente mais tarde'),
+      findsOneWidget,
+    );
+    expect(
+      find.text(R.strings.reload),
+      findsOneWidget,
     );
   });
 }

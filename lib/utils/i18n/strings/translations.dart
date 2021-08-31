@@ -29,6 +29,7 @@ abstract class Translations {
   //Q
   //R
   String get requiredField;
+  String get reload;
   //S
   String get surveys;
   //T

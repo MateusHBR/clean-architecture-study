@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/ui/pages/surveys/survey_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -45,17 +46,35 @@ class _SurveysPageState extends State<SurveysPage> {
             }
           });
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: CarouselSlider(
-              options: CarouselOptions(
-                enlargeCenterPage: true,
-                aspectRatio: 1,
-              ),
-              items: [
-                SurveyItem(),
-              ],
-            ),
+          return StreamBuilder<List<SurveyViewModel>>(
+            stream: presenter!.loadSurveysStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Column(
+                  children: [
+                    Text(snapshot.error.toString()),
+                    TextButton.icon(
+                      onPressed: () {},
+                      icon: Icon(Icons.refresh),
+                      label: Text(R.strings.reload),
+                    ),
+                  ],
+                );
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    enlargeCenterPage: true,
+                    aspectRatio: 1,
+                  ),
+                  items: [
+                    SurveyItem(),
+                  ],
+                ),
+              );
+            },
           );
         },
       ),
