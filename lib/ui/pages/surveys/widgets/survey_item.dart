@@ -15,7 +15,9 @@ class SurveyItem extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
-        color: Theme.of(context).secondaryHeaderColor,
+        color: item.didAnswer
+            ? Theme.of(context).secondaryHeaderColor
+            : Theme.of(context).primaryColorDark,
         boxShadow: [
           const BoxShadow(
             offset: Offset(0, 1),

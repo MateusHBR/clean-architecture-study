@@ -60,13 +60,13 @@ void main() {
       SurveyViewModel(
         id: '1',
         question: 'Question 1',
-        date: 'Any date',
+        date: 'Date 1',
         didAnswer: true,
       ),
       SurveyViewModel(
         id: '2',
         question: 'Question 2',
-        date: 'Any date',
+        date: 'Date 2',
         didAnswer: false,
       ),
     ];
@@ -139,7 +139,22 @@ void main() {
       findsNothing,
     );
     expect(find.text('Question 1'), findsWidgets);
-    expect(find.text('Any date'), findsWidgets);
+    expect(find.text('Date 1'), findsWidgets);
     expect(find.text('Question 2'), findsWidgets);
+    expect(find.text('Date 2'), findsWidgets);
+  });
+
+  testWidgets('should call loadSurveys on reload button click', (tester) async {
+    await loadWidget(tester);
+
+    loadSurveysController.addError(
+      'Algo errado aconteceu. Tente novamente mais tarde',
+    );
+    await tester.pump();
+
+    await tester.tap(find.text(R.strings.reload));
+    await tester.pump();
+
+    verify(() => presenter.loadData()).called(2);
   });
 }

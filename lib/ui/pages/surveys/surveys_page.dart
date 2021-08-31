@@ -54,7 +54,9 @@ class _SurveysPageState extends State<SurveysPage> {
                   children: [
                     Text(snapshot.error.toString()),
                     TextButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        presenter!.loadData();
+                      },
                       icon: Icon(Icons.refresh),
                       label: Text(R.strings.reload),
                     ),
