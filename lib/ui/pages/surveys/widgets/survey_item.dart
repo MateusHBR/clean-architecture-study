@@ -1,8 +1,12 @@
+import 'package:course_clean_arch/ui/pages/surveys/survey_view_model.dart';
 import 'package:flutter/material.dart';
 
 class SurveyItem extends StatelessWidget {
+  final SurveyViewModel item;
+
   const SurveyItem({
     Key? key,
+    required this.item,
   }) : super(key: key);
 
   @override
@@ -27,8 +31,8 @@ class SurveyItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '20 ago 2020',
+          Text(
+            item.date,
             style: TextStyle(
               fontSize: 20,
               color: Colors.white,
@@ -36,8 +40,8 @@ class SurveyItem extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Qual é o seu framework mobile favorito?',
+          Text(
+            item.question,
             style: TextStyle(
               fontSize: 24,
               color: Colors.white,

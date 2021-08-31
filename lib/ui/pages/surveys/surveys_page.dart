@@ -62,18 +62,26 @@ class _SurveysPageState extends State<SurveysPage> {
                 );
               }
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    enlargeCenterPage: true,
-                    aspectRatio: 1,
+              if (snapshot.hasData) {
+                final data = snapshot.data!;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      enlargeCenterPage: true,
+                      aspectRatio: 1,
+                    ),
+                    items: data.map((survey) {
+                      return SurveyItem(
+                        item: survey,
+                      );
+                    }).toList(),
                   ),
-                  items: [
-                    SurveyItem(),
-                  ],
-                ),
-              );
+                );
+              }
+
+              return SizedBox();
             },
           );
         },
