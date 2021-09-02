@@ -43,7 +43,7 @@ void main() {
     PostExpectationResponse mockRequest() => when(
           () => client.post(
             Uri.parse(url),
-            headers: headers,
+            headers: any(named: 'headers'),
             body: any(named: 'body'),
           ),
         );
@@ -78,6 +78,29 @@ void main() {
         () => client.post(
           Uri.parse(url),
           headers: headers,
+          body: '{"any_key":"any_value"}',
+        ),
+      ).called(1);
+
+      await sut.request(
+        url: url,
+        method: 'post',
+        headers: {
+          'any-header': 'any-value',
+        },
+        body: {
+          'any_key': 'any_value',
+        },
+      );
+
+      verify(
+        () => client.post(
+          Uri.parse(url),
+          headers: {
+            'any-header': 'any-value',
+            'content-type': 'application/json',
+            'accept': 'application/json',
+          },
           body: '{"any_key":"any_value"}',
         ),
       ).called(1);

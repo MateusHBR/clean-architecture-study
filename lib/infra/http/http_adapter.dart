@@ -11,15 +11,19 @@ class HttpAdapter implements HttpClient {
     required this.client,
   });
 
-  Future<Map> request({
+  Future request({
     required String url,
     required String method,
+    Map? headers,
     Map? body,
   }) async {
-    final headers = {
-      'content-type': 'application/json',
-      'accept': 'application/json',
-    };
+    final defaultHeaders = headers?.cast<String, String>() ?? {}
+      ..addAll({
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      });
+
+    print(defaultHeaders);
 
     final jsonBody = body != null ? jsonEncode(body) : null;
 
@@ -29,13 +33,13 @@ class HttpAdapter implements HttpClient {
       if (method == 'post') {
         response = await client.post(
           Uri.parse(url),
-          headers: headers,
+          headers: defaultHeaders,
           body: jsonBody,
         );
       } else if (method == 'get') {
         response = await client.get(
           Uri.parse(url),
-          headers: headers,
+          headers: defaultHeaders,
         );
       }
     } catch (error) {
