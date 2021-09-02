@@ -12,10 +12,34 @@ class FetchSecureCacheStorageSpy extends Mock
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
+typedef FutureStringExpectation = When<Future<String>>;
+typedef FutureExpectation = When<Future>;
+
 void main() {
   late FetchSecureCacheStorageSpy fetchSecureCacheStorageSpy;
   late HttpClientSpy httpClientSpy;
   late AuthorizeHttpClientDecorator sut;
+
+  FutureStringExpectation mockFetchSecure() => when(
+        () => fetchSecureCacheStorageSpy.fetchSecure(any()),
+      );
+
+  void mockFetchSecureSuccess() => mockFetchSecure().thenAnswer(
+        (invocation) async => "answer-token",
+      );
+
+  FutureExpectation mockRequest() => when(
+        () => httpClientSpy.request(
+          url: any(named: 'url'),
+          method: any(named: 'method'),
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        ),
+      );
+
+  void mockRequestSuccess() => mockRequest().thenAnswer(
+        (invocation) async => {},
+      );
 
   setUp(() {
     httpClientSpy = HttpClientSpy();
@@ -25,22 +49,8 @@ void main() {
       httpClient: httpClientSpy,
     );
 
-    when(
-      () => fetchSecureCacheStorageSpy.fetchSecure(any()),
-    ).thenAnswer(
-      (invocation) async => "answer-token",
-    );
-
-    when(
-      () => httpClientSpy.request(
-        url: any(named: 'url'),
-        method: any(named: 'method'),
-        body: any(named: 'body'),
-        headers: any(named: 'headers'),
-      ),
-    ).thenAnswer(
-      (invocation) async => {},
-    );
+    mockFetchSecureSuccess();
+    mockRequestSuccess();
   });
 
   test('should call FetchSecureCacheStorage with correct key', () async {
