@@ -28,6 +28,10 @@ void main() {
         (invocation) async => "answer-token",
       );
 
+  void mockFetchSecureError() => mockFetchSecure().thenThrow(
+        Exception(),
+      );
+
   FutureExpectation mockRequest() => when(
         () => httpClientSpy.request(
           url: any(named: 'url'),
@@ -96,5 +100,18 @@ void main() {
     );
 
     expect(response, mockResponse);
+  });
+
+  test('should throws ForbiddenError if FetchSecureCacheStorage throws',
+      () async {
+    mockFetchSecureError();
+
+    final future = sut.request(
+      url: faker.internet.httpUrl(),
+      method: 'post',
+      body: {},
+    );
+
+    expect(future, throwsA(HttpError.forbidden));
   });
 }
