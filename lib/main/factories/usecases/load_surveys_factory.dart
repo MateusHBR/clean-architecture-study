@@ -7,6 +7,6 @@ import '../factories.dart';
 LoadSurveys makeRemoteLoadSurveys() {
   return RemoteLoadSurveys(
     httpClient: makeAuthorizeHttpDecorator(),
-    url: makeApiBaseUrlUrl('surveys'),
+    url: makeApiBaseUrl('surveys'),
   );
 }

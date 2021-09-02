@@ -23,8 +23,6 @@ class HttpAdapter implements HttpClient {
         'accept': 'application/json',
       });
 
-    print(defaultHeaders);
-
     final jsonBody = body != null ? jsonEncode(body) : null;
 
     var response = Response('', 500);
