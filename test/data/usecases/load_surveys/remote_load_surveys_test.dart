@@ -36,13 +36,13 @@ void main() {
         {
           'id': faker.guid.guid(),
           'question': faker.randomGenerator.string(10),
-          'didAnswered': faker.randomGenerator.boolean(),
+          'didAnswer': faker.randomGenerator.boolean(),
           'date': faker.date.dateTime().toIso8601String(),
         },
         {
           'id': faker.guid.guid(),
           'question': faker.randomGenerator.string(10),
-          'didAnswered': faker.randomGenerator.boolean(),
+          'didAnswer': faker.randomGenerator.boolean(),
           'date': faker.date.dateTime().toIso8601String(),
         },
       ];

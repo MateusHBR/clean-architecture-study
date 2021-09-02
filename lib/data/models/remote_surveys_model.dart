@@ -20,13 +20,13 @@ class RemoteSurveysModel {
       'id': id,
       'question': question,
       'date': date.millisecondsSinceEpoch,
-      'didAnswered': didAnswered,
+      'didAnswer': didAnswered,
     };
   }
 
   factory RemoteSurveysModel.fromJson(Map<dynamic, dynamic> json) {
     if (!json.keys.toSet().containsAll(
-      ['id', 'question', 'date', 'didAnswered'],
+      ['id', 'question', 'date', 'didAnswer'],
     )) {
       throw HttpError.invalidData;
     }
@@ -37,7 +37,7 @@ class RemoteSurveysModel {
       date: DateTime.parse(
         json['date'] ?? DateTime.now().toIso8601String(),
       ),
-      didAnswered: json['didAnswered'] ?? false,
+      didAnswered: json['didAnswer'] ?? false,
     );
   }
 
