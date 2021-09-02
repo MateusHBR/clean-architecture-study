@@ -57,7 +57,7 @@ void main() {
     fetchSecureCacheStorageSpy = FetchSecureCacheStorageSpy();
     sut = AuthorizeHttpClientDecorator(
       fetchSecureCacheStorage: fetchSecureCacheStorageSpy,
-      httpClient: httpClientSpy,
+      decoratee: httpClientSpy,
     );
 
     mockFetchSecureSuccess();

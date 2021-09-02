@@ -7,8 +7,8 @@ class AuthorizeHttpClientDecorator implements HttpClient {
 
   AuthorizeHttpClientDecorator({
     required this.fetchSecureCacheStorage,
-    required this.httpClient,
-  });
+    required HttpClient decoratee,
+  }) : httpClient = decoratee;
 
   @override
   Future request({
