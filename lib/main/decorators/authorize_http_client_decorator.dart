@@ -21,7 +21,7 @@ class AuthorizeHttpClientDecorator implements HttpClient {
       'token',
     );
 
-    await httpClient.request(
+    return await httpClient.request(
       url: url,
       method: method,
       body: body,

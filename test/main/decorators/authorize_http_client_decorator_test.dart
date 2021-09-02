@@ -37,9 +37,14 @@ void main() {
         ),
       );
 
-  void mockRequestSuccess() => mockRequest().thenAnswer(
-        (invocation) async => {},
-      );
+  String mockRequestSuccess() {
+    final httpResponse = faker.randomGenerator.string(50);
+    mockRequest().thenAnswer(
+      (invocation) async => httpResponse,
+    );
+
+    return httpResponse;
+  }
 
   setUp(() {
     httpClientSpy = HttpClientSpy();
@@ -79,5 +84,17 @@ void main() {
         },
       ),
     ).called(1);
+  });
+
+  test('should return same result as decoratee', () async {
+    final mockResponse = mockRequestSuccess();
+    final url = faker.internet.httpUrl();
+    final response = await sut.request(
+      url: url,
+      method: 'post',
+      body: {},
+    );
+
+    expect(response, mockResponse);
   });
 }
