@@ -28,8 +28,18 @@ class _SurveysPageState extends State<SurveysPage> {
 
   @override
   void initState() {
-    presenter.loadData();
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      presenter.isLoadingStream.listen((isLoading) {
+        if (isLoading) {
+          showLoading(context);
+        } else {
+          hideLoading(context);
+        }
+      });
+
+      presenter.loadData();
+    });
   }
 
   @override
@@ -40,14 +50,6 @@ class _SurveysPageState extends State<SurveysPage> {
       ),
       body: Builder(
         builder: (context) {
-          presenter.isLoadingStream.listen((isLoading) {
-            if (isLoading) {
-              showLoading(context);
-            } else {
-              hideLoading(context);
-            }
-          });
-
           return StreamBuilder<SurveysState>(
             stream: presenter.surveysStream,
             initialData: SurveysInitialState(),
