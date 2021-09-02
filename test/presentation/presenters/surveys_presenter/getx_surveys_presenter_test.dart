@@ -69,20 +69,22 @@ void main() {
       expectAsync1(
         (surveys) => expect(
           surveys,
-          [
-            SurveyViewModel(
-              id: '1',
-              date: '20 Feb 2020',
-              didAnswered: true,
-              question: 'Question1',
-            ),
-            SurveyViewModel(
-              id: '2',
-              date: '20 Feb 2021',
-              didAnswered: false,
-              question: 'Question2',
-            ),
-          ],
+          SurveysSuccessState(
+            surveys: [
+              SurveyViewModel(
+                id: '1',
+                date: '20 Feb 2020',
+                didAnswered: true,
+                question: 'Question1',
+              ),
+              SurveyViewModel(
+                id: '2',
+                date: '20 Feb 2021',
+                didAnswered: false,
+                question: 'Question2',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -96,11 +98,12 @@ void main() {
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
 
     sut.surveysStream.listen(
-      null,
-      onError: expectAsync1(
+      expectAsync1(
         (error) => expect(
           error,
-          DomainError.unexpected,
+          SurveysErrorState(
+            errorMessage: DomainError.unexpected.description,
+          ),
         ),
       ),
     );
