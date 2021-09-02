@@ -31,6 +31,8 @@ class AuthorizeHttpClientDecorator implements HttpClient {
             "x-access-token": token,
           }),
       );
+    } on HttpError {
+      rethrow;
     } catch (_) {
       throw HttpError.forbidden;
     }

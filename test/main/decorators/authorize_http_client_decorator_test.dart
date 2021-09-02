@@ -50,6 +50,8 @@ void main() {
     return httpResponse;
   }
 
+  void mockRequestError(HttpError error) => mockRequest().thenThrow(error);
+
   setUp(() {
     httpClientSpy = HttpClientSpy();
     fetchSecureCacheStorageSpy = FetchSecureCacheStorageSpy();
@@ -113,5 +115,17 @@ void main() {
     );
 
     expect(future, throwsA(HttpError.forbidden));
+  });
+
+  test('should rethrow if decoratee throws', () async {
+    mockRequestError(HttpError.badRequest);
+
+    final future = sut.request(
+      url: faker.internet.httpUrl(),
+      method: 'post',
+      body: {},
+    );
+
+    expect(future, throwsA(HttpError.badRequest));
   });
 }
