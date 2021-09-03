@@ -4,13 +4,13 @@ class SurveyEntity extends Equatable {
   final String id;
   final String question;
   final DateTime date;
-  final bool didAnswered;
+  final bool didAnswer;
 
   SurveyEntity({
     required this.id,
     required this.question,
     required this.date,
-    required this.didAnswered,
+    required this.didAnswer,
   });
 
   @override
@@ -18,6 +18,6 @@ class SurveyEntity extends Equatable {
         id,
         question,
         date,
-        didAnswered,
+        didAnswer,
       ];
 }

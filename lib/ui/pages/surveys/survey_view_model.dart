@@ -4,13 +4,13 @@ class SurveyViewModel extends Equatable {
   final String id;
   final String question;
   final String date;
-  final bool didAnswered;
+  final bool didAnswer;
 
   SurveyViewModel({
     required this.id,
     required this.question,
     required this.date,
-    required this.didAnswered,
+    required this.didAnswer,
   });
 
   @override
@@ -18,6 +18,6 @@ class SurveyViewModel extends Equatable {
         id,
         question,
         date,
-        didAnswered,
+        didAnswer,
       ];
 }

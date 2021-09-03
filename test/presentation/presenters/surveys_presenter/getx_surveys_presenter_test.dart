@@ -21,13 +21,13 @@ void main() {
     SurveyEntity(
       id: '1',
       date: DateTime(2020, 2, 20),
-      didAnswered: true,
+      didAnswer: true,
       question: 'Question1',
     ),
     SurveyEntity(
       id: '2',
       date: DateTime(2021, 2, 20),
-      didAnswered: false,
+      didAnswer: false,
       question: 'Question2',
     ),
   ];
@@ -74,13 +74,13 @@ void main() {
               SurveyViewModel(
                 id: '1',
                 date: '20 Feb 2020',
-                didAnswered: true,
+                didAnswer: true,
                 question: 'Question1',
               ),
               SurveyViewModel(
                 id: '2',
                 date: '20 Feb 2021',
-                didAnswered: false,
+                didAnswer: false,
                 question: 'Question2',
               ),
             ],

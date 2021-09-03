@@ -1,8 +1,10 @@
-import 'package:course_clean_arch/domain/entities/survey_entity.dart';
-import 'package:course_clean_arch/domain/usecases/usecases.dart';
+import 'package:course_clean_arch/data/models/models.dart';
+
+import '../../../domain/entities/entities.dart';
+import '../../../domain/usecases/usecases.dart';
 
 abstract class FetchCacheStorage {
-  Future<void> call(String key);
+  Future<dynamic> call(String key);
 }
 
 class LocalLoadSurveys implements LoadSurveys {
@@ -14,7 +16,10 @@ class LocalLoadSurveys implements LoadSurveys {
 
   @override
   Future<List<SurveyEntity>> call() async {
-    await fetchCacheStorage('surveys');
-    return [];
+    final data = await fetchCacheStorage('surveys');
+
+    return data.map<SurveyEntity>((json) {
+      return LocalSurveysModel.fromJson(json).toEntity();
+    }).toList();
   }
 }
