@@ -1,5 +1,6 @@
-import 'package:course_clean_arch/data/models/models.dart';
+import '../../../data/models/models.dart';
 
+import '../../../domain/helpers/helpers.dart';
 import '../../../domain/entities/entities.dart';
 import '../../../domain/usecases/usecases.dart';
 
@@ -17,6 +18,10 @@ class LocalLoadSurveys implements LoadSurveys {
   @override
   Future<List<SurveyEntity>> call() async {
     final data = await fetchCacheStorage('surveys');
+
+    if (data.isEmpty) {
+      throw DomainError.unexpected;
+    }
 
     return data.map<SurveyEntity>((json) {
       return LocalSurveysModel.fromJson(json).toEntity();

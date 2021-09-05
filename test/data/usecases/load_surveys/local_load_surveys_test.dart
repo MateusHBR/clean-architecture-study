@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -38,10 +39,16 @@ void main() {
         () => fetchCacheStorage(any()),
       );
 
-  void mockFetchSuccess() {
+  void mockFetchSuccess({
+    List<Map<String, String>>? response,
+  }) {
     mockFetchCache().thenAnswer(
-      (_) async => data,
+      (_) async => response ?? data,
     );
+  }
+
+  void mockFetchError() {
+    mockFetchCache().thenThrow('');
   }
 
   test('Should call FetchCacheStorage with correct key', () async {
@@ -74,5 +81,13 @@ void main() {
         ),
       ],
     );
+  });
+
+  test('should throw unexpectedError if cache is empty', () {
+    mockFetchSuccess(response: []);
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
