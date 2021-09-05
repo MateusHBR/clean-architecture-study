@@ -48,7 +48,7 @@ void main() {
   }
 
   void mockFetchError() {
-    mockFetchCache().thenThrow('');
+    mockFetchCache().thenThrow(Exception());
   }
 
   test('Should call FetchCacheStorage with correct key', () async {
@@ -112,6 +112,14 @@ void main() {
         },
       ],
     );
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('should throw unexpectedError if cache is invalid', () {
+    mockFetchError();
 
     final future = sut();
 
