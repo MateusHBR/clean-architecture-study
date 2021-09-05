@@ -1,7 +1,5 @@
 import '../../domain/entities/entities.dart';
 
-import '../http/http.dart';
-
 class LocalSurveysModel {
   final String id;
   final String question;
@@ -25,11 +23,11 @@ class LocalSurveysModel {
   // }
 
   factory LocalSurveysModel.fromJson(Map<dynamic, dynamic> json) {
-    // if (!json.keys.toSet().containsAll(
-    //   ['id', 'question', 'date', 'didAnswer'],
-    // )) {
-    //   throw HttpError.invalidData;
-    // }
+    if (!json.keys.toSet().containsAll(
+      ['id', 'question', 'date', 'didAnswer'],
+    )) {
+      throw Exception('Error, does not have the correct values');
+    }
 
     return LocalSurveysModel(
       id: json['id'] ?? '',

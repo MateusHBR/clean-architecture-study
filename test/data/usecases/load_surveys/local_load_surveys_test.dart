@@ -107,10 +107,8 @@ void main() {
     mockFetchSuccess(
       response: [
         {
-          'date': 'invalid data',
           'id': faker.guid.guid(),
           'didAnswer': 'true',
-          'question': faker.randomGenerator.string(10),
         },
       ],
     );
