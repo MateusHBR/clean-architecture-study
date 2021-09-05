@@ -102,4 +102,21 @@ void main() {
 
     expect(future, throwsA(DomainError.unexpected));
   });
+
+  test('should throw unexpectedError if cache is invalid', () {
+    mockFetchSuccess(
+      response: [
+        {
+          'date': 'invalid data',
+          'id': faker.guid.guid(),
+          'didAnswer': 'true',
+          'question': faker.randomGenerator.string(10),
+        },
+      ],
+    );
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
 }

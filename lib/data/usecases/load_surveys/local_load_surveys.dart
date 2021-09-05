@@ -19,12 +19,18 @@ class LocalLoadSurveys implements LoadSurveys {
   Future<List<SurveyEntity>> call() async {
     final data = await fetchCacheStorage('surveys');
 
-    if (data?.isEmpty != false) {
+    try {
+      if (data?.isEmpty != false) {
+        throw DomainError.unexpected;
+      }
+
+      return data.map<SurveyEntity>((json) {
+        return LocalSurveysModel.fromJson(json).toEntity();
+      }).toList();
+    } on DomainError {
+      rethrow;
+    } catch (_) {
       throw DomainError.unexpected;
     }
-
-    return data.map<SurveyEntity>((json) {
-      return LocalSurveysModel.fromJson(json).toEntity();
-    }).toList();
   }
 }
