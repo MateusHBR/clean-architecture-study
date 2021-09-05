@@ -1,10 +1,10 @@
-import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:course_clean_arch/domain/entities/entities.dart';
 import 'package:course_clean_arch/data/usecases/usecases.dart';
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
+import 'package:course_clean_arch/domain/entities/entities.dart';
 
 class FetchCacheStorageSpy extends Mock implements FetchCacheStorage {}
 
@@ -40,10 +40,10 @@ void main() {
       );
 
   void mockFetchSuccess({
-    List<Map<String, String>>? response,
+    required List<Map<String, String>>? response,
   }) {
     mockFetchCache().thenAnswer(
-      (_) async => response ?? data,
+      (_) async => response,
     );
   }
 
@@ -52,7 +52,9 @@ void main() {
   }
 
   test('Should call FetchCacheStorage with correct key', () async {
-    mockFetchSuccess();
+    mockFetchSuccess(
+      response: data,
+    );
 
     await sut();
 
@@ -60,7 +62,9 @@ void main() {
   });
 
   test('Should return a list of surveys on success', () async {
-    mockFetchSuccess();
+    mockFetchSuccess(
+      response: data,
+    );
 
     final surveys = await sut();
 
@@ -85,6 +89,14 @@ void main() {
 
   test('should throw unexpectedError if cache is empty', () {
     mockFetchSuccess(response: []);
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('should throw unexpectedError if cache is empty', () {
+    mockFetchSuccess(response: null);
 
     final future = sut();
 

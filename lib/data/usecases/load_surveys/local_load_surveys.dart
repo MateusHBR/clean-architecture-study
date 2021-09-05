@@ -19,7 +19,7 @@ class LocalLoadSurveys implements LoadSurveys {
   Future<List<SurveyEntity>> call() async {
     final data = await fetchCacheStorage('surveys');
 
-    if (data.isEmpty) {
+    if (data?.isEmpty != false) {
       throw DomainError.unexpected;
     }
 
