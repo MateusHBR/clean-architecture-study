@@ -2,6 +2,7 @@ import 'package:faker/faker.dart';
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:course_clean_arch/data/cache/cache.dart';
 import 'package:course_clean_arch/data/usecases/usecases.dart';
 import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:course_clean_arch/domain/entities/entities.dart';
