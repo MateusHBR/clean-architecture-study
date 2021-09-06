@@ -158,6 +158,10 @@ void main() {
           () => cacheStorage.fetch(any()),
         );
 
+    When<Future<void>> mockDeleteCache() => when(
+          () => cacheStorage.delete(any()),
+        );
+
     void mockFetchSuccess({
       required List<Map<String, String>>? response,
     }) {
@@ -166,8 +170,18 @@ void main() {
       );
     }
 
+    void mockDeleteCacheSuccess() {
+      mockDeleteCache().thenAnswer(
+        (_) async => {},
+      );
+    }
+
     void mockFetchError() {
       mockFetchCache().thenThrow(Exception());
+    }
+
+    void mockDeleteCacheError() {
+      mockDeleteCache().thenThrow(Exception());
     }
 
     test('Should call cacheStorage with correct key', () async {
@@ -177,7 +191,25 @@ void main() {
 
       await sut.validate();
 
-      verify(() => cacheStorage.fetch('surveys'));
+      verify(() => cacheStorage.fetch('surveys')).called(1);
+    });
+
+    test('Should delete cache if is invalid', () async {
+      mockFetchSuccess(
+        response: [
+          {
+            'date': 'DateTime(2018).toIso8601String()',
+            'id': faker.guid.guid(),
+            'didAnswer': 'true',
+            'question': faker.randomGenerator.string(10),
+          }
+        ],
+      );
+      mockDeleteCacheSuccess();
+
+      await sut.validate();
+
+      verify(() => cacheStorage.delete('surveys')).called(1);
     });
   });
 }
