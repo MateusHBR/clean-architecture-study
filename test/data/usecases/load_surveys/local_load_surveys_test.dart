@@ -211,5 +211,21 @@ void main() {
 
       verify(() => cacheStorage.delete('surveys')).called(1);
     });
+
+    test('Should delete cache if it is incomplete', () async {
+      mockFetchSuccess(
+        response: [
+          {
+            'id': faker.guid.guid(),
+            'question': faker.randomGenerator.string(10),
+          }
+        ],
+      );
+      mockDeleteCacheSuccess();
+
+      await sut.validate();
+
+      verify(() => cacheStorage.delete('surveys')).called(1);
+    });
   });
 }
