@@ -12,118 +12,120 @@ class FetchCacheStorageSpy extends Mock implements FetchCacheStorage {}
 typedef FetchCacheExpectation = When<Future<dynamic>>;
 
 void main() {
-  late FetchCacheStorageSpy fetchCacheStorage;
-  late LocalLoadSurveys sut;
-  final data = [
-    {
-      'date': DateTime(2018).toIso8601String(),
-      'id': faker.guid.guid(),
-      'didAnswer': 'true',
-      'question': faker.randomGenerator.string(10),
-    },
-    {
-      'date': DateTime(2021).toIso8601String(),
-      'id': faker.guid.guid(),
-      'didAnswer': 'true',
-      'question': faker.randomGenerator.string(10),
-    },
-  ];
+  group('load', () {
+    late FetchCacheStorageSpy fetchCacheStorage;
+    late LocalLoadSurveys sut;
+    final data = [
+      {
+        'date': DateTime(2018).toIso8601String(),
+        'id': faker.guid.guid(),
+        'didAnswer': 'true',
+        'question': faker.randomGenerator.string(10),
+      },
+      {
+        'date': DateTime(2021).toIso8601String(),
+        'id': faker.guid.guid(),
+        'didAnswer': 'true',
+        'question': faker.randomGenerator.string(10),
+      },
+    ];
 
-  setUp(() {
-    fetchCacheStorage = FetchCacheStorageSpy();
-    sut = LocalLoadSurveys(
-      fetchCacheStorage: fetchCacheStorage,
-    );
-  });
+    setUp(() {
+      fetchCacheStorage = FetchCacheStorageSpy();
+      sut = LocalLoadSurveys(
+        fetchCacheStorage: fetchCacheStorage,
+      );
+    });
 
-  FetchCacheExpectation mockFetchCache() => when(
-        () => fetchCacheStorage(any()),
+    FetchCacheExpectation mockFetchCache() => when(
+          () => fetchCacheStorage(any()),
+        );
+
+    void mockFetchSuccess({
+      required List<Map<String, String>>? response,
+    }) {
+      mockFetchCache().thenAnswer(
+        (_) async => response,
+      );
+    }
+
+    void mockFetchError() {
+      mockFetchCache().thenThrow(Exception());
+    }
+
+    test('Should call FetchCacheStorage with correct key', () async {
+      mockFetchSuccess(
+        response: data,
       );
 
-  void mockFetchSuccess({
-    required List<Map<String, String>>? response,
-  }) {
-    mockFetchCache().thenAnswer(
-      (_) async => response,
-    );
-  }
+      await sut();
 
-  void mockFetchError() {
-    mockFetchCache().thenThrow(Exception());
-  }
+      verify(() => fetchCacheStorage('surveys'));
+    });
 
-  test('Should call FetchCacheStorage with correct key', () async {
-    mockFetchSuccess(
-      response: data,
-    );
+    test('Should return a list of surveys on success', () async {
+      mockFetchSuccess(
+        response: data,
+      );
 
-    await sut();
+      final surveys = await sut();
 
-    verify(() => fetchCacheStorage('surveys'));
-  });
+      expect(
+        surveys,
+        [
+          SurveyEntity(
+            id: data[0]['id']!,
+            didAnswer: bool.fromEnvironment(data[0]['didAnswer']!),
+            question: data[0]['question']!,
+            date: DateTime.parse(data[0]['date']!),
+          ),
+          SurveyEntity(
+            id: data[1]['id']!,
+            didAnswer: bool.fromEnvironment(data[1]['didAnswer']!),
+            question: data[1]['question']!,
+            date: DateTime.parse(data[1]['date']!),
+          ),
+        ],
+      );
+    });
 
-  test('Should return a list of surveys on success', () async {
-    mockFetchSuccess(
-      response: data,
-    );
+    test('should throw unexpectedError if cache is empty', () {
+      mockFetchSuccess(response: []);
 
-    final surveys = await sut();
+      final future = sut();
 
-    expect(
-      surveys,
-      [
-        SurveyEntity(
-          id: data[0]['id']!,
-          didAnswer: bool.fromEnvironment(data[0]['didAnswer']!),
-          question: data[0]['question']!,
-          date: DateTime.parse(data[0]['date']!),
-        ),
-        SurveyEntity(
-          id: data[1]['id']!,
-          didAnswer: bool.fromEnvironment(data[1]['didAnswer']!),
-          question: data[1]['question']!,
-          date: DateTime.parse(data[1]['date']!),
-        ),
-      ],
-    );
-  });
+      expect(future, throwsA(DomainError.unexpected));
+    });
 
-  test('should throw unexpectedError if cache is empty', () {
-    mockFetchSuccess(response: []);
+    test('should throw unexpectedError if cache is empty', () {
+      mockFetchSuccess(response: null);
 
-    final future = sut();
+      final future = sut();
 
-    expect(future, throwsA(DomainError.unexpected));
-  });
+      expect(future, throwsA(DomainError.unexpected));
+    });
 
-  test('should throw unexpectedError if cache is empty', () {
-    mockFetchSuccess(response: null);
+    test('should throw unexpectedError if cache is invalid', () {
+      mockFetchSuccess(
+        response: [
+          {
+            'id': faker.guid.guid(),
+            'didAnswer': 'true',
+          },
+        ],
+      );
 
-    final future = sut();
+      final future = sut();
 
-    expect(future, throwsA(DomainError.unexpected));
-  });
+      expect(future, throwsA(DomainError.unexpected));
+    });
 
-  test('should throw unexpectedError if cache is invalid', () {
-    mockFetchSuccess(
-      response: [
-        {
-          'id': faker.guid.guid(),
-          'didAnswer': 'true',
-        },
-      ],
-    );
+    test('should throw unexpectedError if cache is invalid', () {
+      mockFetchError();
 
-    final future = sut();
+      final future = sut();
 
-    expect(future, throwsA(DomainError.unexpected));
-  });
-
-  test('should throw unexpectedError if cache is invalid', () {
-    mockFetchError();
-
-    final future = sut();
-
-    expect(future, throwsA(DomainError.unexpected));
+      expect(future, throwsA(DomainError.unexpected));
+    });
   });
 }
