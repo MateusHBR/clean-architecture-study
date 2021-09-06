@@ -9,7 +9,7 @@ import 'package:course_clean_arch/domain/entities/entities.dart';
 
 class CacheStorageSpy extends Mock implements CacheStorage {}
 
-typedef FetchCacheExpectation = When<Future<dynamic>>;
+typedef CacheExpectation = When<Future<dynamic>>;
 
 void main() {
   group('load', () {
@@ -37,7 +37,7 @@ void main() {
       );
     });
 
-    FetchCacheExpectation mockFetchCache() => when(
+    CacheExpectation mockFetchCache() => when(
           () => cacheStorage.fetch(any()),
         );
 
@@ -154,7 +154,7 @@ void main() {
       );
     });
 
-    FetchCacheExpectation mockFetchCache() => when(
+    CacheExpectation mockFetchCache() => when(
           () => cacheStorage.fetch(any()),
         );
 
