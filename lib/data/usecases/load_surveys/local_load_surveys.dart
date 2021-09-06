@@ -6,16 +6,16 @@ import '../../../domain/entities/entities.dart';
 import '../../../domain/usecases/usecases.dart';
 
 class LocalLoadSurveys implements LoadSurveys {
-  final FetchCacheStorage fetchCacheStorage;
+  final CacheStorage cacheStorage;
 
   LocalLoadSurveys({
-    required this.fetchCacheStorage,
+    required this.cacheStorage,
   });
 
   @override
   Future<List<SurveyEntity>> call() async {
     try {
-      final data = await fetchCacheStorage('surveys');
+      final data = await cacheStorage.fetch('surveys');
 
       if (data?.isEmpty != false) {
         throw DomainError.unexpected;
