@@ -175,74 +175,9 @@ void main() {
         response: data,
       );
 
-      await sut();
+      await sut.validate();
 
       verify(() => cacheStorage.fetch('surveys'));
-    });
-
-    test('Should return a list of surveys on success', () async {
-      mockFetchSuccess(
-        response: data,
-      );
-
-      final surveys = await sut();
-
-      expect(
-        surveys,
-        [
-          SurveyEntity(
-            id: data[0]['id']!,
-            didAnswer: bool.fromEnvironment(data[0]['didAnswer']!),
-            question: data[0]['question']!,
-            date: DateTime.parse(data[0]['date']!),
-          ),
-          SurveyEntity(
-            id: data[1]['id']!,
-            didAnswer: bool.fromEnvironment(data[1]['didAnswer']!),
-            question: data[1]['question']!,
-            date: DateTime.parse(data[1]['date']!),
-          ),
-        ],
-      );
-    });
-
-    test('should throw unexpectedError if cache is empty', () {
-      mockFetchSuccess(response: []);
-
-      final future = sut();
-
-      expect(future, throwsA(DomainError.unexpected));
-    });
-
-    test('should throw unexpectedError if cache is empty', () {
-      mockFetchSuccess(response: null);
-
-      final future = sut();
-
-      expect(future, throwsA(DomainError.unexpected));
-    });
-
-    test('should throw unexpectedError if cache is invalid', () {
-      mockFetchSuccess(
-        response: [
-          {
-            'id': faker.guid.guid(),
-            'didAnswer': 'true',
-          },
-        ],
-      );
-
-      final future = sut();
-
-      expect(future, throwsA(DomainError.unexpected));
-    });
-
-    test('should throw unexpectedError if cache is invalid', () {
-      mockFetchError();
-
-      final future = sut();
-
-      expect(future, throwsA(DomainError.unexpected));
     });
   });
 }
