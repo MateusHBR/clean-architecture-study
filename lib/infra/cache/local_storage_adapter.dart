@@ -11,8 +11,7 @@ class LocalStorageAdapter implements CacheStorage {
 
   @override
   Future<void> delete(String key) async {
-    // TODO: implement delete
-    throw UnimplementedError();
+    await localStorage.deleteItem(key);
   }
 
   @override

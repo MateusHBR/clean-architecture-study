@@ -58,4 +58,20 @@ void main() {
       expect(future, throwsA(isA<Exception>()));
     });
   });
+
+  group('delete', () {
+    test('should call local storage with correct values', () async {
+      await sut.delete('key');
+
+      verify(() => localStorageSpy.deleteItem('key')).called(1);
+    });
+
+    test('should throw if delete item throws', () async {
+      mockDeleteError();
+
+      final future = sut.delete('key');
+
+      expect(future, throwsA(isA<Exception>()));
+    });
+  });
 }
