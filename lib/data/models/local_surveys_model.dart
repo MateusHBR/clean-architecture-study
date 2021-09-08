@@ -13,15 +13,6 @@ class LocalSurveysModel {
     required this.didAnswer,
   });
 
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'id': id,
-  //     'question': question,
-  //     'date': date.millisecondsSinceEpoch,
-  //     'didAnswer': didAnswer,
-  //   };
-  // }
-
   factory LocalSurveysModel.fromJson(Map<dynamic, dynamic> json) {
     if (!json.keys.toSet().containsAll(
       ['id', 'question', 'date', 'didAnswer'],
@@ -39,10 +30,27 @@ class LocalSurveysModel {
     );
   }
 
+  factory LocalSurveysModel.fromEntity(SurveyEntity entity) =>
+      LocalSurveysModel(
+        id: entity.id,
+        question: entity.question,
+        date: entity.date,
+        didAnswer: entity.didAnswer,
+      );
+
   SurveyEntity toEntity() => SurveyEntity(
         id: this.id,
         date: this.date,
         didAnswer: this.didAnswer,
         question: this.question,
       );
+
+  Map<String, String> toJson() {
+    return {
+      'id': id,
+      'question': question,
+      'date': date.toIso8601String(),
+      'didAnswer': didAnswer.toString(),
+    };
+  }
 }

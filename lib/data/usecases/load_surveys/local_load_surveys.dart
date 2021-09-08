@@ -39,9 +39,22 @@ class LocalLoadSurveys implements LoadSurveys {
     }
   }
 
+  Future<void> save(List<SurveyEntity> surveys) async {
+    await cacheStorage.save<List<Map>>(
+      key: 'surveys',
+      value: _mapToJson(surveys),
+    );
+  }
+
   List<SurveyEntity> _map(List<Map> list) {
     return list.map<SurveyEntity>((json) {
       return LocalSurveysModel.fromJson(json).toEntity();
+    }).toList();
+  }
+
+  List<Map<String, String>> _mapToJson(List<SurveyEntity> list) {
+    return list.map((survey) {
+      return LocalSurveysModel.fromEntity(survey).toJson();
     }).toList();
   }
 }

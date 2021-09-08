@@ -237,4 +237,73 @@ void main() {
       verify(() => cacheStorage.delete('surveys')).called(1);
     });
   });
+
+  group('validate', () {
+    late CacheStorageSpy cacheStorage;
+    late LocalLoadSurveys sut;
+    late List<SurveyEntity> surveys;
+
+    List<SurveyEntity> mockSurveys() => [
+          SurveyEntity(
+            id: faker.guid.guid(),
+            date: DateTime.utc(2021, 20, 2),
+            question: faker.randomGenerator.string(10),
+            didAnswer: true,
+          ),
+          SurveyEntity(
+            id: faker.guid.guid(),
+            date: DateTime.utc(2018, 20, 2),
+            question: faker.randomGenerator.string(10),
+            didAnswer: true,
+          ),
+        ];
+
+    setUp(() {
+      cacheStorage = CacheStorageSpy();
+      sut = LocalLoadSurveys(
+        cacheStorage: cacheStorage,
+      );
+      surveys = mockSurveys();
+    });
+
+    When<Future<void>> mockSaveCache() => when(
+          () => cacheStorage.save(
+              key: any(named: 'key'), value: any(named: 'value')),
+        );
+
+    void mockSaveCacheSuccess() {
+      mockSaveCache().thenAnswer(
+        (_) async => {},
+      );
+    }
+
+    void mockSaveCacheError() {
+      mockSaveCache().thenThrow(Exception());
+    }
+
+    test('Should call cacheStorage with correct values', () async {
+      mockSaveCacheSuccess();
+
+      final list = [
+        {
+          'id': surveys[0].id,
+          'date': surveys[0].date.toIso8601String(),
+          'didAnswer': surveys[0].didAnswer.toString(),
+          'question': surveys[0].question,
+        },
+        {
+          'id': surveys[1].id,
+          'date': surveys[1].date.toIso8601String(),
+          'didAnswer': surveys[1].didAnswer.toString(),
+          'question': surveys[1].question,
+        },
+      ];
+
+      await sut.save(surveys);
+
+      verify(
+        () => cacheStorage.save<List<Map>>(key: 'surveys', value: list),
+      ).called(1);
+    });
+  });
 }

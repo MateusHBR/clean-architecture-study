@@ -1,4 +1,8 @@
 abstract class CacheStorage {
-  Future<dynamic> fetch(String key);
+  Future<ResponseType> fetch<ResponseType>(String key);
   Future<void> delete(String key);
+  Future<void> save<T>({
+    required String key,
+    T value,
+  });
 }
