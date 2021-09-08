@@ -23,6 +23,7 @@ class LocalStorageAdapter implements CacheStorage {
 
   @override
   Future<void> save<T>({required String key, required T value}) async {
+    await localStorage.deleteItem(key);
     await localStorage.setItem(key, value);
   }
 }
