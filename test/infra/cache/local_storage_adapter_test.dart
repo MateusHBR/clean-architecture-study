@@ -12,13 +12,13 @@ typedef StringExpectation = When<Future<String?>>;
 
 void main() {
   late FlutterSecureStorageSpy flutterSecureStorage;
-  late LocalStorageAdapter sut;
+  late SecureLocalStorageAdapter sut;
   late String key;
   late String value;
 
   setUp(() {
     flutterSecureStorage = FlutterSecureStorageSpy();
-    sut = LocalStorageAdapter(secureStorage: flutterSecureStorage);
+    sut = SecureLocalStorageAdapter(secureStorage: flutterSecureStorage);
 
     key = faker.lorem.word();
     value = faker.guid.guid();
