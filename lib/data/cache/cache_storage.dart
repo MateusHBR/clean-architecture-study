@@ -3,6 +3,6 @@ abstract class CacheStorage {
   Future<void> delete(String key);
   Future<void> save<T>({
     required String key,
-    T value,
+    required T value,
   });
 }
