@@ -305,5 +305,13 @@ void main() {
         () => cacheStorage.save<List<Map>>(key: 'surveys', value: list),
       ).called(1);
     });
+
+    test('Should throw DomainError.unexpected when cache.save throws',
+        () async {
+      mockSaveCacheError();
+      final future = sut.save(surveys);
+
+      expect(future, throwsA(DomainError.unexpected));
+    });
   });
 }
