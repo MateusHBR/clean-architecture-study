@@ -74,4 +74,37 @@ void main() {
       expect(future, throwsA(isA<Exception>()));
     });
   });
+
+  group('fetch', () {
+    When<Future<void>> mockFetch() =>
+        when(() => localStorageSpy.getItem(any()));
+
+    mockFetchSuccess(dynamic data) => mockFetch().thenAnswer((_) async => data);
+
+    mockFetchError() => mockFetch().thenThrow(Exception());
+
+    test('should call local storage with correct values', () async {
+      mockFetchSuccess('response');
+
+      await sut.fetch('key');
+
+      verify(() => localStorageSpy.getItem('key')).called(1);
+    });
+
+    test('should return same value as local storage', () async {
+      mockFetchSuccess('response');
+
+      final response = await sut.fetch('key');
+
+      expect(response, 'response');
+    });
+
+    test('should throw if delete item throws', () async {
+      mockFetchError();
+
+      final future = sut.fetch('key');
+
+      expect(future, throwsA(isA<Exception>()));
+    });
+  });
 }
