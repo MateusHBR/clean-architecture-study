@@ -34,26 +34,28 @@ void main() {
     mockDeleteSuccess();
   });
 
-  test('should call local storage with correct values', () async {
-    await sut.save(key: 'key', value: 'value');
+  group('save', () {
+    test('should call local storage with correct values', () async {
+      await sut.save(key: 'key', value: 'value');
 
-    verify(() => localStorageSpy.deleteItem('key')).called(1);
-    verify(() => localStorageSpy.setItem('key', 'value')).called(1);
-  });
+      verify(() => localStorageSpy.deleteItem('key')).called(1);
+      verify(() => localStorageSpy.setItem('key', 'value')).called(1);
+    });
 
-  test('should throw if delete item throws', () async {
-    mockDeleteError();
+    test('should throw if delete item throws', () async {
+      mockDeleteError();
 
-    final future = sut.save(key: 'key', value: 'value');
+      final future = sut.save(key: 'key', value: 'value');
 
-    expect(future, throwsA(isA<Exception>()));
-  });
+      expect(future, throwsA(isA<Exception>()));
+    });
 
-  test('should throw if save item throws', () async {
-    mockSaveError();
+    test('should throw if save item throws', () async {
+      mockSaveError();
 
-    final future = sut.save(key: 'key', value: 'value');
+      final future = sut.save(key: 'key', value: 'value');
 
-    expect(future, throwsA(isA<Exception>()));
+      expect(future, throwsA(isA<Exception>()));
+    });
   });
 }
