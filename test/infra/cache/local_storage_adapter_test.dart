@@ -20,6 +20,8 @@ void main() {
 
   mockDeleteSuccess() => mockDelete().thenAnswer((_) async => null);
 
+  mockDeleteError() => mockDelete().thenThrow(Exception());
+
   setUp(() {
     localStorageSpy = LocalStorageSpy();
     sut = LocalStorageAdapter(
@@ -35,5 +37,13 @@ void main() {
 
     verify(() => localStorageSpy.deleteItem('key')).called(1);
     verify(() => localStorageSpy.setItem('key', 'value')).called(1);
+  });
+
+  test('should throw if delete item throws', () async {
+    mockDeleteError();
+
+    final future = sut.save(key: 'key', value: 'value');
+
+    expect(future, throwsA(isA<Exception>()));
   });
 }
