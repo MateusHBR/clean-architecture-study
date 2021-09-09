@@ -39,10 +39,14 @@ class HttpAdapter implements HttpClient {
               Duration(seconds: 10),
             );
       } else if (method == 'get') {
-        response = await client.get(
-          Uri.parse(url),
-          headers: defaultHeaders,
-        );
+        response = await client
+            .get(
+              Uri.parse(url),
+              headers: defaultHeaders,
+            )
+            .timeout(
+              Duration(seconds: 10),
+            );
       }
     } catch (error) {
       throw HttpError.serverError;
