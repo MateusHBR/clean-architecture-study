@@ -48,6 +48,18 @@ void main() {
     mockRemote().thenThrow(error);
   }
 
+  void mockSaveError(DomainError error) {
+    mockSave().thenThrow(error);
+  }
+
+  void mockLocalError(DomainError error) {
+    mockLocal().thenThrow(error);
+  }
+
+  void mockValidateError(DomainError error) {
+    mockValidate().thenThrow(error);
+  }
+
   setUp(() {
     local = LocalLoadSurveysSpy();
     remote = RemoteLoadSurveysSpy();
@@ -108,14 +120,23 @@ void main() {
     verify(() => local());
   });
 
-  test('should return local data on remote error', () async {
+  test('should throw unexpected error if validate throws', () async {
+    mockSaveError(DomainError.unexpected);
     mockRemoteError(DomainError.unexpected);
+    mockValidateError(DomainError.unexpected);
 
-    final surveys = mockSurveys();
-    mockLocalSuccess(surveys);
-    mockValidateSuccess();
-    final localData = await sut();
+    final future = sut();
 
-    expect(localData, surveys);
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('should throw unexpected error if local throws', () async {
+    mockSaveError(DomainError.unexpected);
+    mockValidateError(DomainError.unexpected);
+    mockLocalError(DomainError.unexpected);
+
+    final future = sut();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
