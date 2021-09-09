@@ -2,7 +2,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:course_clean_arch/validation/protocols/protocols.dart';
-import 'package:course_clean_arch/validation/validators/validators.dart';
+import 'package:course_clean_arch/main/composites/composites.dart';
 
 class FieldValidationSpty extends Mock implements FieldValidation {}
 
