@@ -12,10 +12,12 @@ class LocalLoadSurveys implements LoadSurveys {
     required this.cacheStorage,
   });
 
+  final surveysKey = 'surveys';
+
   @override
   Future<List<SurveyEntity>> call() async {
     try {
-      final data = await cacheStorage.fetch('surveys');
+      final data = await cacheStorage.fetch(surveysKey);
 
       if (data?.isEmpty != false) {
         throw DomainError.unexpected;
@@ -31,18 +33,18 @@ class LocalLoadSurveys implements LoadSurveys {
 
   Future<void> validate() async {
     try {
-      final data = await cacheStorage.fetch('surveys');
+      final data = await cacheStorage.fetch<List<Map>>(surveysKey);
 
       _map(data);
     } catch (_) {
-      cacheStorage.delete('surveys');
+      cacheStorage.delete(surveysKey);
     }
   }
 
   Future<void> save(List<SurveyEntity> surveys) async {
     try {
       await cacheStorage.save<List<Map>>(
-        key: 'surveys',
+        key: surveysKey,
         value: _mapToJson(surveys),
       );
     } catch (_) {
