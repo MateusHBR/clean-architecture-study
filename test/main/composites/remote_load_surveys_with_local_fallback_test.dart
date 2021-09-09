@@ -64,4 +64,14 @@ void main() {
 
     verify(() => local.save(surveys)).called(1);
   });
+
+  test('should return remote data', () async {
+    final surveys = mockSurveys();
+
+    mockRemoteSuccess(surveys);
+
+    final remoteResult = await sut();
+
+    expect(surveys, remoteResult);
+  });
 }
