@@ -1,5 +1,6 @@
 import 'package:course_clean_arch/data/usecases/usecases.dart';
 import 'package:course_clean_arch/domain/entities/survey_entity.dart';
+import 'package:course_clean_arch/domain/helpers/domain_error.dart';
 import 'package:course_clean_arch/domain/usecases/usecases.dart';
 
 class RemoteLoadSurveysWithLocalFallback implements LoadSurveys {
@@ -13,10 +14,18 @@ class RemoteLoadSurveysWithLocalFallback implements LoadSurveys {
 
   @override
   Future<List<SurveyEntity>> call() async {
-    final surveys = await remoteLoadSurveys();
+    try {
+      final surveys = await remoteLoadSurveys();
 
-    await localLoadSurveys.save(surveys);
+      await localLoadSurveys.save(surveys);
 
-    return surveys;
+      return surveys;
+    } on DomainError catch (error) {
+      if (error == DomainError.accessDenied) {
+        rethrow;
+      }
+
+      rethrow;
+    }
   }
 }

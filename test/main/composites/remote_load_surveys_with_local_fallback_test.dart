@@ -1,4 +1,5 @@
 import 'package:course_clean_arch/domain/entities/entities.dart';
+import 'package:course_clean_arch/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -35,6 +36,10 @@ void main() {
   }
 
   void mockSaveSuccess() => mockSave().thenAnswer((_) async => {});
+
+  void mockRemoteError(DomainError error) {
+    mockRemote().thenThrow(error);
+  }
 
   setUp(() {
     local = LocalLoadSurveysSpy();
@@ -73,5 +78,12 @@ void main() {
     final remoteResult = await sut();
 
     expect(surveys, remoteResult);
+  });
+
+  test('should rethrow if remote load throws AccessDeniedError', () async {
+    mockRemoteError(DomainError.accessDenied);
+    final future = sut();
+
+    expect(future, throwsA(DomainError.accessDenied));
   });
 }
