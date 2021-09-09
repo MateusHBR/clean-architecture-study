@@ -5,6 +5,6 @@ import '../../usecases/usecase.dart';
 
 SurveysPresenter makeGetxSurveysPresenter() {
   return GetxSurveysPresenter(
-    loadSurveys: makeRemoteLoadSurveys(),
+    loadSurveys: makeRemoteLoadSurveysWithLocalFallback(),
   );
 }
