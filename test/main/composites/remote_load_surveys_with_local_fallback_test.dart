@@ -28,14 +28,21 @@ void main() {
       ];
 
   SurveysExpectation mockRemote() => when(() => remote());
+  SurveysExpectation mockLocal() => when(() => local());
 
   When<Future<void>> mockSave() => when(() => local.save(any()));
+  When<Future<void>> mockValidate() => when(() => local.validate());
 
   void mockRemoteSuccess(List<SurveyEntity> response) {
     mockRemote().thenAnswer((_) async => response);
   }
 
+  void mockLocalSuccess(List<SurveyEntity> response) =>
+      mockLocal().thenAnswer((_) async => response);
+
   void mockSaveSuccess() => mockSave().thenAnswer((_) async => {});
+
+  void mockValidateSuccess() => mockValidate().thenAnswer((_) async => {});
 
   void mockRemoteError(DomainError error) {
     mockRemote().thenThrow(error);
@@ -49,8 +56,13 @@ void main() {
       localLoadSurveys: local,
     );
 
-    mockRemoteSuccess(mockSurveys());
+    final surveys = mockSurveys();
+
+    mockRemoteSuccess(surveys);
     mockSaveSuccess();
+
+    mockLocalSuccess(surveys);
+    mockValidateSuccess();
   });
 
   test('Should call remote load', () async {
@@ -85,5 +97,25 @@ void main() {
     final future = sut();
 
     expect(future, throwsA(DomainError.accessDenied));
+  });
+
+  test('should call local fetch on remote error', () async {
+    mockRemoteError(DomainError.unexpected);
+
+    await sut();
+
+    verify(() => local.validate());
+    verify(() => local());
+  });
+
+  test('should return local data on remote error', () async {
+    mockRemoteError(DomainError.unexpected);
+
+    final surveys = mockSurveys();
+    mockLocalSuccess(surveys);
+    mockValidateSuccess();
+    final localData = await sut();
+
+    expect(localData, surveys);
   });
 }
