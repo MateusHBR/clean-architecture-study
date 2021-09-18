@@ -14,11 +14,16 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
   });
 
   final _isLoadingObservable = Rx<bool>(true);
+  final _isSessionExpiredObservable = Rx<bool>(false);
   final _isSurveysObservable = Rx<SurveysState>(SurveysInitialState());
 
   @override
   Stream<bool> get isLoadingStream =>
       _isLoadingObservable.stream as Stream<bool>;
+
+  @override
+  Stream<bool> get isSessionExpiredStream =>
+      _isSessionExpiredObservable.stream as Stream<bool>;
 
   @override
   Stream<SurveysState> get surveysStream =>
@@ -43,6 +48,11 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
             .toList(),
       );
     } on DomainError catch (error) {
+      print(error);
+      if (error == DomainError.accessDenied) {
+        _isSessionExpiredObservable.value = true;
+      }
+
       _isSurveysObservable.value = SurveysErrorState(
         errorMessage: error.description,
       );

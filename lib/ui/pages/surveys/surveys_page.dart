@@ -37,6 +37,11 @@ class _SurveysPageState extends State<SurveysPage> {
           hideLoading(context);
         }
       });
+      presenter.isSessionExpiredStream.listen((expired) {
+        if (expired) {
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+      });
 
       presenter.loadData();
     });
