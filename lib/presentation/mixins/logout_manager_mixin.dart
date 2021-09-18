@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-mixin LogoutManager {
+mixin LogoutManager on GetxController {
   final _isSessionExpiredObservable = Rx<bool>(false);
 
   Stream<bool> get isSessionExpiredStream =>
