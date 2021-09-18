@@ -11,12 +11,18 @@ class App extends StatelessWidget {
       title: 'Course Clean Architecture',
       theme: AppTheme.theme,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/survey_result/4',
+      initialRoute: '/survey_result',
       routes: {
-        '/': (context) => makeSplashPage(),
+        // '/': (context) => makeSplashPage(),
         '/login': (context) => makeLoginPage(),
         '/surveys': (context) => makeSurveysPage(),
-        '/survey_result/:survey_id': (context) => makeSurveyResultPage(),
+        '/survey_result': (context) {
+          // final args = ModalRoute.of(context)!.settings.arguments
+          //     as SurveyResultPageArguments;
+
+          return makeSurveyResultPage(SurveyResultPageArguments(id: 0));
+          // return makeSurveyResultPage(args);
+        }
       },
     );
   }
