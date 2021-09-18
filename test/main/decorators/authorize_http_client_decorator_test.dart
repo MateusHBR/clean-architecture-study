@@ -10,6 +10,9 @@ import 'package:course_clean_arch/main/decorators/decorators.dart';
 class FetchSecureCacheStorageSpy extends Mock
     implements FetchSecureCacheStorage {}
 
+class DeleteSecureCacheStorageSpy extends Mock
+    implements DeleteSecureCacheStorage {}
+
 class HttpClientSpy extends Mock implements HttpClient {}
 
 typedef FutureStringExpectation = When<Future<String>>;
@@ -56,6 +59,7 @@ void main() {
     httpClientSpy = HttpClientSpy();
     fetchSecureCacheStorageSpy = FetchSecureCacheStorageSpy();
     sut = AuthorizeHttpClientDecorator(
+      deleteSecureCacheStorage: DeleteSecureCacheStorageSpy(),
       fetchSecureCacheStorage: fetchSecureCacheStorageSpy,
       decoratee: httpClientSpy,
     );

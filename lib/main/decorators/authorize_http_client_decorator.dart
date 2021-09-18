@@ -3,10 +3,12 @@ import 'package:course_clean_arch/data/http/http.dart';
 
 class AuthorizeHttpClientDecorator implements HttpClient {
   final FetchSecureCacheStorage fetchSecureCacheStorage;
+  final DeleteSecureCacheStorage deleteSecureCacheStorage;
   final HttpClient httpClient;
 
   AuthorizeHttpClientDecorator({
     required this.fetchSecureCacheStorage,
+    required this.deleteSecureCacheStorage,
     required HttpClient decoratee,
   }) : httpClient = decoratee;
 
@@ -31,9 +33,14 @@ class AuthorizeHttpClientDecorator implements HttpClient {
             "x-access-token": token,
           }),
       );
-    } on HttpError {
+    } on HttpError catch (e) {
+      if (e == HttpError.forbidden) {
+        await deleteSecureCacheStorage.delete('token');
+      }
+
       rethrow;
     } catch (_) {
+      await deleteSecureCacheStorage.delete('token');
       throw HttpError.forbidden;
     }
   }
