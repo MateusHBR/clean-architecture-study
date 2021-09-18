@@ -6,7 +6,11 @@ import 'package:course_clean_arch/domain/usecases/usecases.dart';
 
 import '../../../ui/pages/pages.dart';
 
-class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
+import '../../mixins/mixins.dart';
+
+class GetxSurveysPresenter extends GetxController
+    with LogoutManager
+    implements SurveysPresenter {
   final LoadSurveys loadSurveys;
 
   GetxSurveysPresenter({
@@ -14,16 +18,11 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
   });
 
   final _isLoadingObservable = Rx<bool>(true);
-  final _isSessionExpiredObservable = Rx<bool>(false);
   final _isSurveysObservable = Rx<SurveysState>(SurveysInitialState());
 
   @override
   Stream<bool> get isLoadingStream =>
       _isLoadingObservable.stream as Stream<bool>;
-
-  @override
-  Stream<bool> get isSessionExpiredStream =>
-      _isSessionExpiredObservable.stream as Stream<bool>;
 
   @override
   Stream<SurveysState> get surveysStream =>
@@ -50,7 +49,7 @@ class GetxSurveysPresenter extends GetxController implements SurveysPresenter {
     } on DomainError catch (error) {
       print(error);
       if (error == DomainError.accessDenied) {
-        _isSessionExpiredObservable.value = true;
+        setExpiredSession();
       }
 
       _isSurveysObservable.value = SurveysErrorState(
