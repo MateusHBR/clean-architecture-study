@@ -1,3 +1,4 @@
+import 'package:course_clean_arch/ui/mixings/mixings.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -21,7 +22,7 @@ class SurveysPage extends StatefulWidget {
   _SurveysPageState createState() => _SurveysPageState(presenter);
 }
 
-class _SurveysPageState extends State<SurveysPage> {
+class _SurveysPageState extends State<SurveysPage> with LogoutManager {
   final SurveysPresenter presenter;
 
   _SurveysPageState(this.presenter);
@@ -37,11 +38,8 @@ class _SurveysPageState extends State<SurveysPage> {
           hideLoading(context);
         }
       });
-      presenter.isSessionExpiredStream.listen((expired) {
-        if (expired) {
-          Navigator.pushReplacementNamed(context, '/login');
-        }
-      });
+
+      handleLogout(presenter.isSessionExpiredStream, context);
 
       presenter.loadData();
     });
